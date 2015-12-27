@@ -22,7 +22,7 @@ public class Game {
 
         for (Command cmd : parser.getCommands()) {
             try {
-                switch (cmd.getName()) {
+                switch (cmd.getCommandName()) {
                     case "patch-of":
                         this.patchOf(new PatchOfCommand(cmd));
                         break;

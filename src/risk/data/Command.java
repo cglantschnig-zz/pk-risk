@@ -7,18 +7,18 @@ import java.util.Arrays;
 public class Command {
 
     protected String original;
-    protected String name;
+    protected String commandName;
     protected String[] parameters;
 
     public Command(String cmd) {
         this.original = cmd;
         String[] words = cmd.split("\\s+");
-        this.name = words[0];
+        this.commandName = words[0];
         this.parameters = Arrays.copyOfRange(words, 1, words.length);
     }
 
-    public String getName() {
-        return this.name;
+    public String getCommandName() {
+        return this.commandName;
     }
 
     public String[] getParameters() {
@@ -31,6 +31,6 @@ public class Command {
         for (int i = 1; i < this.parameters.length; i++) {
             params += ", " + this.parameters[i];
         }
-        return this.name + "->" + params;
+        return this.commandName + "->" + params;
     }
 }
