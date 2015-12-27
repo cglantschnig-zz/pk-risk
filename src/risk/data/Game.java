@@ -9,12 +9,14 @@ import java.util.HashMap;
 public class Game {
 
     private HashMap<String, Territory> territories;
+    private HashMap<String, Continent> continents;
 
     /**
      * 1. load map file and create Map data
      */
     public Game() {
         territories = new HashMap<>();
+        continents = new HashMap<>();
 
         // loading the map file
         CommandParser parser = new CommandParser("src/assets/world.map");
@@ -32,7 +34,7 @@ public class Game {
                         this.neighborsOf(new NeighborsOfCommand(cmd));
                         break;
                     case "continent":
-                        System.out.println("continent");
+                        this.continent(new ContinentCommand(cmd));
                         break;
                     default:
                         System.out.println("invalid command");
@@ -72,6 +74,11 @@ public class Game {
         this.territories.put(cmd.getCountry(), home);
     }
 
+    private void continent(ContinentCommand cmd) {
+        Continent tmp = new Continent(cmd.getContinent(), cmd.getCountries(), cmd.getBonus());
+        this.continents.put(cmd.getContinent(), tmp);
+    }
+
     private Territory findTerritory(String country) {
         if (this.territories.containsKey(country)) {
             return this.territories.get(country);
@@ -79,6 +86,5 @@ public class Game {
             return new Territory(country);
         }
     }
-
 
 }
