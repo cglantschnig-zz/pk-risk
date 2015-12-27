@@ -1,7 +1,5 @@
 package risk.utils;
 
-import risk.data.Command;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package risk.data;
+package risk.utils;
 
 import com.sun.xml.internal.ws.util.StringUtils;
 

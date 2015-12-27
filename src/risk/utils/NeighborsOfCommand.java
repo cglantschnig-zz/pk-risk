@@ -1,6 +1,4 @@
-package risk.data;
-
-import risk.utils.InvalidCommandException;
+package risk.utils;
 
 import java.util.ArrayList;
 

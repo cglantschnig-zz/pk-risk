@@ -1,7 +1,6 @@
 package risk.data;
 
-import risk.utils.CommandParser;
-import risk.utils.InvalidCommandException;
+import risk.utils.*;
 
 import java.awt.*;
 import java.util.Collection;
