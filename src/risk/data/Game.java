@@ -30,7 +30,7 @@ public class Game {
                         this.capitalOf(new CapitalOfCommand(cmd));
                         break;
                     case "neighbors-of":
-                        System.out.println("neighbors-of");
+                        this.neighborsOf(new NeighborsOfCommand(cmd));
                         break;
                     case "continent":
                         System.out.println("continent");
@@ -43,10 +43,6 @@ public class Game {
             }
         }
 
-        for (Territory t : this.territories.values()) {
-            System.out.println(t);
-        }
-
     }
 
     public Collection<Territory> getTerritories() {
@@ -54,24 +50,36 @@ public class Game {
     }
 
     private void patchOf(PatchOfCommand cmd) {
-        Territory tmp = null;
-        if (this.territories.containsKey(cmd.getCountry())) {
-            tmp = (Territory)this.territories.get(cmd.getCountry());
-        } else {
-            tmp = new Territory(cmd.getCountry());
-        }
+        Territory tmp = this.findTerritory(cmd.getCountry());
         tmp.addPatch( new Patch(cmd.getPoints()) );
         this.territories.put(cmd.getCountry(), tmp);
     }
 
     private void capitalOf(CapitalOfCommand cmd) {
-        Territory tmp = null;
-        if (this.territories.containsKey(cmd.getCountry())) {
-            tmp = (Territory)this.territories.get(cmd.getCountry());
-        } else {
-            tmp = new Territory(cmd.getCountry());
-        }
+        Territory tmp = this.findTerritory(cmd.getCountry());
         tmp.setCapital( new Point(cmd.getX(), cmd.getY()) );
         this.territories.put(cmd.getCountry(), tmp);
     }
+
+    private void neighborsOf(NeighborsOfCommand cmd) {
+        Territory home = this.findTerritory(cmd.getCountry());
+        for (String neighbor : cmd.getNeighbors()) {
+            home.addNeighbor(neighbor);
+
+            Territory other = this.findTerritory(neighbor);
+            other.addNeighbor(cmd.getCountry());
+            this.territories.put(neighbor, other);
+        }
+        this.territories.put(cmd.getCountry(), home);
+    }
+
+    private Territory findTerritory(String country) {
+        if (this.territories.containsKey(country)) {
+            return this.territories.get(country);
+        } else {
+            return new Territory(country);
+        }
+    }
+
+
 }
