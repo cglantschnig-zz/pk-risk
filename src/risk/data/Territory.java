@@ -40,6 +40,10 @@ public class Territory {
         return this.patches;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     @Override
     public String toString() {
         String params = "";
