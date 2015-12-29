@@ -52,7 +52,7 @@ public class Game {
 
     private void patchOf(PatchOfCommand cmd) {
         Territory tmp = this.findTerritory(cmd.getCountry());
-        tmp.addPatch( new Patch(cmd.getPoints()) );
+        tmp.addPatch( new Patch(cmd.getCountry(), cmd.getPoints()) );
         this.territories.put(cmd.getCountry(), tmp);
     }
 

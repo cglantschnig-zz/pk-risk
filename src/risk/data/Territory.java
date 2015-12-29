@@ -10,6 +10,7 @@ public class Territory {
     private ArrayList<Patch> patches;
     private Point capital;
     private HashMap<String, String> neighbors;
+
     public Territory(String name) {
         this.patches = new ArrayList<>();
         this.neighbors = new HashMap<>();
@@ -38,6 +39,14 @@ public class Territory {
 
     public ArrayList<Patch> getPatches() {
         return this.patches;
+    }
+
+    public ArrayList<PatchPolygon> getPolygons() {
+        ArrayList<PatchPolygon> tmp = new ArrayList<>();
+        for (Patch p : this.patches) {
+            tmp.add(p.getPolygon());
+        }
+        return tmp;
     }
 
     public String getName() {

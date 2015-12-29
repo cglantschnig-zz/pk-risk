@@ -1,17 +1,27 @@
 package risk.components;
 
+import risk.data.PatchPolygon;
 import risk.data.Territory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Collection;
 
-public class Map extends JComponent {
+public class Map extends JComponent implements MouseListener {
 
     private Collection<Territory> territories;
+    private ArrayList<PatchPolygon> areas;
     public Map(Collection<Territory> territories) {
         super();
+        this.addMouseListener(this);
         this.territories = territories;
+        this.areas = new ArrayList<>();
+        for (Territory tmp : this.territories) {
+            this.areas.addAll(tmp.getPolygons());
+        }
     }
 
     @Override
@@ -24,7 +34,34 @@ public class Map extends JComponent {
             TerritoryComponent territoryComponent = new TerritoryComponent(tmp);
             this.add(territoryComponent);
         }
-        this.updateUI();
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        for (PatchPolygon area : this.areas) {
+            if ( area.contains(e.getX() , e.getY()) ) {
+                System.out.println( area.getTerritory() );
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }
