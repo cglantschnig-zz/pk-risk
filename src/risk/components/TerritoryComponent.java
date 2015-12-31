@@ -29,13 +29,17 @@ public class TerritoryComponent extends JComponent {
         super.paintComponent(graphics);
         Player player = this.territory.getPlayer();
         Color fillColor = player == null ? this.noPlayerFillColor : player.getColor();
-        if (this.territory.isSelected()) {
-            fillColor = new Color(0,0,0);
-        }
-        Color borderColor = this.territory.isSelected() ? this.selectedBorderColor : this.borderColor;
 
         Graphics2D g2 = (Graphics2D) graphics;
-        g2.setStroke(new BasicStroke(2));
+        if (this.territory.isSelected()) {
+            g2.setStroke(new BasicStroke(2));
+            fillColor = new Color(
+                    (int) ((fillColor.getRed() * (1 - 0.2) / 255 + 0.2) * 255),
+                    (int) ((fillColor.getGreen() * (1 - 0.2) / 255 + 0.2) * 255),
+                    (int) ((fillColor.getBlue() * (1 - 0.2) / 255 + 0.2) * 255)
+            );
+        }
+        Color borderColor = this.territory.isSelected() ? this.selectedBorderColor : this.borderColor;
 
         for (Patch patch : this.territory.getPatches()) {
             PatchPolygon polygon = patch.getPolygon();
