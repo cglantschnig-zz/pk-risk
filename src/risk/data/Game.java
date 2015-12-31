@@ -105,12 +105,16 @@ public class Game {
         this.continents.put(cmd.getContinent(), tmp);
     }
 
-    private Territory findTerritory(String country) {
+    public Territory findTerritory(String country) {
         if (this.territories.containsKey(country)) {
             return this.territories.get(country);
         } else {
             return new Territory(country);
         }
+    }
+
+    public void updateTerritory(Territory tmp) {
+        this.territories.put(tmp.getName(), tmp);
     }
 
 }

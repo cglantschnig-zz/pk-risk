@@ -21,7 +21,7 @@ public class Application extends JFrame implements ActionListener {
 
         // initialize data
         this.game = new Game();
-        this.map = new Map(this.game.getTerritories());
+        this.map = new Map(this.game.getTerritories(), this.game);
         this.game.setMap(map);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

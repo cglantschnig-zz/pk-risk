@@ -12,6 +12,7 @@ public class Territory {
     private HashMap<String, String> neighbors;
     private Player player = null;
     private int units = 0;
+    private boolean selected = false;
 
     public Territory(String name) {
         this.patches = new ArrayList<>();
@@ -22,6 +23,10 @@ public class Territory {
     public void setPlayer(Player player, int units) {
         this.player = player;
         this.units = units;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public void addPatch(Patch p) {
@@ -66,6 +71,10 @@ public class Territory {
 
     public int getUnits() {
         return units;
+    }
+
+    public boolean isSelected() {
+        return selected;
     }
 
     @Override
