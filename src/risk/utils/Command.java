@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class Command {
 
-    protected String original;
+    public String original;
     protected String commandName;
     protected String[] parameters;
 

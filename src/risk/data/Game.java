@@ -16,15 +16,19 @@ public class Game {
     private Map map; // Map reference
     private State state = new SelectionState();
 
+    public Game() {
+        this("world.map");
+    }
+
     /**
      * 1. load map file and create Map data
      */
-    public Game() {
+    public Game(String mapFile) {
         territories = new HashMap<>();
         continents = new HashMap<>();
 
         // loading the map file
-        CommandParser parser = new CommandParser("src/assets/world.map");
+        CommandParser parser = new CommandParser("src/assets/" + mapFile);
 
         for (Command cmd : parser.getCommands()) {
             try {
@@ -42,7 +46,7 @@ public class Game {
                         this.continent(new ContinentCommand(cmd));
                         break;
                     default:
-                        System.out.println("invalid command");
+                        System.out.println("invalid command - " + cmd.original);
                 }
             } catch (InvalidCommandException e) {
                 System.out.println(e);
