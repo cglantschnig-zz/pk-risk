@@ -41,6 +41,7 @@ public class Map extends JComponent implements MouseListener {
         for (PatchPolygon area : this.areas) {
             if ( area.contains(e.getX() , e.getY()) ) {
                 System.out.println( area.getTerritory() );
+                break;
             }
         }
     }
