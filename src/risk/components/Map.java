@@ -3,6 +3,7 @@ package risk.components;
 import risk.data.Game;
 import risk.data.PatchPolygon;
 import risk.data.Territory;
+import risk.utils.SelectionState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,20 +43,22 @@ public class Map extends JComponent implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        String clicked = null;
-        for (PatchPolygon area : this.areas) {
-            if ( area.contains(e.getX() , e.getY()) ) {
-                clicked = area.getTerritory();
+        if (this.game.getState() instanceof SelectionState) {
+            String clicked = null;
+            for (PatchPolygon area : this.areas) {
+                if (area.contains(e.getX(), e.getY())) {
+                    clicked = area.getTerritory();
+                }
             }
-        }
-        for (Territory territory : this.territories) {
-            territory.setSelected(false);
-            if (territory.getName().equals(clicked)) {
-                territory.setSelected(true);
+            for (Territory territory : this.territories) {
+                territory.setSelected(false);
+                if (territory.getName().equals(clicked)) {
+                    territory.setSelected(true);
+                }
+                this.game.updateTerritory(territory);
             }
-            this.game.updateTerritory(territory);
+            this.repaint();
         }
-        this.repaint();
     }
 
     @Override

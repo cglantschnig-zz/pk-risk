@@ -14,6 +14,7 @@ public class Game {
     private HashMap<String, Continent> continents;
     private Player[] players;
     private Map map; // Map reference
+    private State state = new SelectionState();
 
     /**
      * 1. load map file and create Map data
@@ -84,7 +85,7 @@ public class Game {
 
     private void capitalOf(CapitalOfCommand cmd) {
         Territory tmp = this.findTerritory(cmd.getCountry());
-        tmp.setCapital( new Point(cmd.getX(), cmd.getY()) );
+        tmp.setCapital(new Point(cmd.getX(), cmd.getY()));
         this.territories.put(cmd.getCountry(), tmp);
     }
 
@@ -103,6 +104,10 @@ public class Game {
     private void continent(ContinentCommand cmd) {
         Continent tmp = new Continent(cmd.getContinent(), cmd.getCountries(), cmd.getBonus());
         this.continents.put(cmd.getContinent(), tmp);
+    }
+
+    public State getState() {
+        return this.state;
     }
 
     public Territory findTerritory(String country) {
