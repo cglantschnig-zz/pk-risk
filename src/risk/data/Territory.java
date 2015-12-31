@@ -10,11 +10,18 @@ public class Territory {
     private ArrayList<Patch> patches;
     private Point capital;
     private HashMap<String, String> neighbors;
+    private Player player = null;
+    private int units = 0;
 
     public Territory(String name) {
         this.patches = new ArrayList<>();
         this.neighbors = new HashMap<>();
         this.name = name;
+    }
+
+    public void setPlayer(Player player, int units) {
+        this.player = player;
+        this.units = units;
     }
 
     public void addPatch(Patch p) {
@@ -51,6 +58,14 @@ public class Territory {
 
     public String getName() {
         return this.name;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public int getUnits() {
+        return units;
     }
 
     @Override

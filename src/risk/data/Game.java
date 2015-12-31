@@ -1,8 +1,10 @@
 package risk.data;
 
+import risk.components.Map;
 import risk.utils.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -10,6 +12,8 @@ public class Game {
 
     private HashMap<String, Territory> territories;
     private HashMap<String, Continent> continents;
+    private Player[] players;
+    private Map map; // Map reference
 
     /**
      * 1. load map file and create Map data
@@ -44,6 +48,28 @@ public class Game {
             }
         }
 
+        // set Players
+        this.players = new Player[5];
+        this.players[0] = new Computer("Computer 1", new Color(255, 99, 72));
+        this.players[1] = new Computer("Computer 2", new Color(44, 255, 144));
+        this.players[2] = new Computer("Computer 3", new Color(179, 77, 255));
+        this.players[3] = new Computer("Computer 4", new Color(255, 210, 90));
+        this.players[4] = new Computer("Computer 5", new Color(63, 231, 255));
+
+    }
+
+    public void selectMap() {
+        ArrayList<Territory> leftTerritories = new ArrayList<>(this.territories.values());
+        for (int i = 0; !leftTerritories.isEmpty(); i++) {
+            Player tmp = this.players[i % this.players.length];
+            Territory territory = this.findTerritory(tmp.chooseCountry(leftTerritories));
+            territory.setPlayer(tmp, 1);
+        }
+        this.map.repaint();
+    }
+
+    public void setMap(Map map) {
+        this.map = map;
     }
 
     public Collection<Territory> getTerritories() {

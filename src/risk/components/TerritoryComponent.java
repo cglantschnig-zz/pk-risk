@@ -2,6 +2,7 @@ package risk.components;
 
 import risk.data.Patch;
 import risk.data.PatchPolygon;
+import risk.data.Player;
 import risk.data.Territory;
 
 import javax.swing.*;
@@ -20,10 +21,13 @@ public class TerritoryComponent extends JComponent {
     @Override
     public void paintComponent(Graphics graphics)
     {
+        Player player = this.territory.getPlayer();
+        Color fillColor = player == null ? new Color(255, 255, 255) : player.getColor();
+
         for (Patch patch : this.territory.getPatches()) {
             PatchPolygon polygon = patch.getPolygon();
 
-            graphics.setColor(new Color(255, 255, 255));
+            graphics.setColor(fillColor);
             graphics.fillPolygon(polygon.getX(), polygon.getY(), polygon.getLength());
 
             graphics.setColor(new Color(52, 52, 52));
