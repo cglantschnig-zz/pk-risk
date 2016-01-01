@@ -84,7 +84,6 @@ public class Game {
 
     public void setNextPerson() {
         if (this.leftTerritories.isEmpty()) {
-            System.out.println("FINISHED SELECTION");
             this.state.next();
             return;
         }
