@@ -3,7 +3,7 @@ package risk.components;
 import risk.data.Game;
 import risk.data.PatchPolygon;
 import risk.data.Territory;
-import risk.utils.listeners.ToolboxListener;
+import risk.utils.listeners.MapChangeListener;
 import risk.utils.states.SelectionState;
 
 import javax.swing.*;
@@ -13,7 +13,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Map extends JComponent implements MouseListener, ToolboxListener {
+public class Map extends JComponent implements MouseListener, MapChangeListener {
 
     private Collection<Territory> territories;
     private ArrayList<PatchPolygon> areas;

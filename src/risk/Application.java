@@ -3,15 +3,14 @@ package risk;
 import risk.components.Map;
 import risk.components.ToolBox;
 import risk.data.Game;
-import risk.utils.listeners.ToolboxListener;
+import risk.utils.listeners.MapChangeListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class Application extends JFrame implements ToolboxListener {
+public class Application extends JFrame implements MapChangeListener {
     private Map map;
     private ToolBox toolBox;
 

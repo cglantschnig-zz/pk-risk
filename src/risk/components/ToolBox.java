@@ -1,7 +1,7 @@
 package risk.components;
 
 import risk.data.Game;
-import risk.utils.listeners.ToolboxListener;
+import risk.utils.listeners.MapChangeListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ public class ToolBox extends JPanel implements ActionListener {
     private JComboBox selectMap = new JComboBox();
     private Game game = null;
 
-    private ArrayList<ToolboxListener> listeners = new ArrayList<ToolboxListener>();
+    private ArrayList<MapChangeListener> listeners = new ArrayList<MapChangeListener>();
 
     public ToolBox(Game game) {
         super();
@@ -33,7 +33,7 @@ public class ToolBox extends JPanel implements ActionListener {
         selectMap.addActionListener(this);
     }
 
-    public void addToolboxListener(ToolboxListener listener) {
+    public void addToolboxListener(MapChangeListener listener) {
         this.listeners.add(listener);
     }
 
@@ -44,7 +44,7 @@ public class ToolBox extends JPanel implements ActionListener {
             System.out.println(this.selectMap.getSelectedItem().toString());
             this.game = new Game(this.selectMap.getSelectedItem().toString());
 
-            for (ToolboxListener listener : this.listeners) {
+            for (MapChangeListener listener : this.listeners) {
                 listener.changeMap(this.game);
             }
         }

@@ -2,6 +2,6 @@ package risk.utils.listeners;
 
 import risk.data.Game;
 
-public interface ToolboxListener {
+public interface MapChangeListener {
     void changeMap(Game game);
 }
