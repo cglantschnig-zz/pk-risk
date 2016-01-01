@@ -1,4 +1,6 @@
-package risk.utils;
+package risk.utils.command;
+
+import risk.utils.command.Command;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

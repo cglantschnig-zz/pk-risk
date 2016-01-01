@@ -1,4 +1,4 @@
-package risk.utils;
+package risk.utils.command;
 
 public class InvalidCommandException extends Exception {
     public InvalidCommandException() {

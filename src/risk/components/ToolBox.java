@@ -26,13 +26,13 @@ public class ToolBox extends JPanel implements ActionListener {
         this.add(start);
         start.addActionListener(this);
         selectMap.addActionListener(this);
-        start.requestFocusInWindow();
     }
 
     public void actionPerformed (ActionEvent ae){
         if(ae.getSource() == this.start){
             this.game.selectMap();
         } else if (ae.getSource() == this.selectMap) {
+            System.out.println(this.selectMap.getSelectedItem().toString());
             this.game = new Game(this.selectMap.getSelectedItem().toString());
         }
     }

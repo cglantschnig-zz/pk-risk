@@ -3,7 +3,7 @@ package risk.components;
 import risk.data.Game;
 import risk.data.PatchPolygon;
 import risk.data.Territory;
-import risk.utils.SelectionState;
+import risk.utils.states.SelectionState;
 
 import javax.swing.*;
 import java.awt.*;

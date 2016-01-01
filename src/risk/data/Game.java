@@ -1,7 +1,9 @@
 package risk.data;
 
 import risk.components.Map;
-import risk.utils.*;
+import risk.utils.command.*;
+import risk.utils.states.NewState;
+import risk.utils.states.State;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public class Game {
     private HashMap<String, Continent> continents;
     private Player[] players;
     private Map map; // Map reference
-    private State state = new SelectionState();
+    private State state = new NewState();
 
     public Game() {
         this("world.map");
