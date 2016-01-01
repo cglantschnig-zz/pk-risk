@@ -1,4 +1,4 @@
-package risk.utils;
+package risk.utils.command;
 
 import com.sun.xml.internal.ws.util.StringUtils;
 
@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class Command {
 
-    protected String original;
+    public String original;
     protected String commandName;
     protected String[] parameters;
 

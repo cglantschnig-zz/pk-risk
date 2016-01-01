@@ -1,4 +1,6 @@
-package risk.utils;
+package risk.utils.command;
+
+import risk.utils.command.Command;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -33,7 +35,9 @@ public class CommandParser {
             br = new BufferedReader(new FileReader(this.path));
 
             while ((sCurrentLine = br.readLine()) != null) {
-                this.commands.add( new Command(sCurrentLine) );
+                if (!sCurrentLine.isEmpty()) {
+                    this.commands.add(new Command(sCurrentLine));
+                }
             }
 
         } catch (IOException e) {

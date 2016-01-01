@@ -1,7 +1,9 @@
 package risk.data;
 
 import risk.components.Map;
-import risk.utils.*;
+import risk.utils.command.*;
+import risk.utils.states.NewState;
+import risk.utils.states.State;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,16 +16,29 @@ public class Game {
     private HashMap<String, Continent> continents;
     private Player[] players;
     private Map map; // Map reference
+    private State state = new NewState();
+
+    private ArrayList<Territory> leftTerritories;
+    private int turn = 0;
+    private Player currentSelector = null;
+
+    public Game() {
+        this("world.map");
+    }
+    public Game(String mapFile, Game initiator) {
+        this(mapFile);
+        this.map = initiator.map;
+    }
 
     /**
      * 1. load map file and create Map data
      */
-    public Game() {
+    public Game(String mapFile) {
         territories = new HashMap<>();
         continents = new HashMap<>();
 
         // loading the map file
-        CommandParser parser = new CommandParser("src/assets/world.map");
+        CommandParser parser = new CommandParser("src/assets/" + mapFile);
 
         for (Command cmd : parser.getCommands()) {
             try {
@@ -41,7 +56,7 @@ public class Game {
                         this.continent(new ContinentCommand(cmd));
                         break;
                     default:
-                        System.out.println("invalid command");
+                        System.out.println("invalid command: `" + cmd.original + "`");
                 }
             } catch (InvalidCommandException e) {
                 System.out.println(e);
@@ -51,7 +66,7 @@ public class Game {
         // set Players
         this.players = new Player[5];
         this.players[0] = new Computer("Computer 1", new Color(255, 99, 72));
-        this.players[1] = new Computer("Computer 2", new Color(44, 255, 144));
+        this.players[1] = new Person("Computer 2", new Color(44, 255, 144));
         this.players[2] = new Computer("Computer 3", new Color(179, 77, 255));
         this.players[3] = new Computer("Computer 4", new Color(255, 210, 90));
         this.players[4] = new Computer("Computer 5", new Color(63, 231, 255));
@@ -59,13 +74,32 @@ public class Game {
     }
 
     public void selectMap() {
-        ArrayList<Territory> leftTerritories = new ArrayList<>(this.territories.values());
-        for (int i = 0; !leftTerritories.isEmpty(); i++) {
-            Player tmp = this.players[i % this.players.length];
-            Territory territory = this.findTerritory(tmp.chooseCountry(leftTerritories));
-            territory.setPlayer(tmp, 1);
+        this.leftTerritories = new ArrayList<>(this.territories.values());
+        this.turn = 0;
+        this.state = this.state.next();
+        this.setNextPerson();
+    }
+
+    public void setNextPerson() {
+        if (this.leftTerritories.isEmpty()) {
+            System.out.println("FINISHED SELECTION");
+            this.state.next();
+            return;
         }
-        this.map.repaint();
+        this.currentSelector = this.players[this.turn % this.players.length];
+        if (this.currentSelector instanceof Computer) {
+            Territory territory = this.findTerritory(this.currentSelector.chooseCountry(leftTerritories));
+            territory.setPlayer(this.currentSelector, 1);
+            this.turn += 1;
+            this.map.repaint();
+            this.setNextPerson();
+        } else {
+            this.turn += 1;
+        }
+    }
+
+    public Player getCurrentPlayer() {
+        return this.currentSelector;
     }
 
     public void setMap(Map map) {
@@ -84,7 +118,7 @@ public class Game {
 
     private void capitalOf(CapitalOfCommand cmd) {
         Territory tmp = this.findTerritory(cmd.getCountry());
-        tmp.setCapital( new Point(cmd.getX(), cmd.getY()) );
+        tmp.setCapital(new Point(cmd.getX(), cmd.getY()));
         this.territories.put(cmd.getCountry(), tmp);
     }
 
@@ -105,12 +139,24 @@ public class Game {
         this.continents.put(cmd.getContinent(), tmp);
     }
 
+    public State getState() {
+        return this.state;
+    }
+
     public Territory findTerritory(String country) {
         if (this.territories.containsKey(country)) {
             return this.territories.get(country);
         } else {
             return new Territory(country);
         }
+    }
+
+    public ArrayList<Territory> getLeftTerritories() {
+        return this.leftTerritories;
+    }
+
+    public void setLeftTerritories(ArrayList<Territory> leftTerritories) {
+        this.leftTerritories = leftTerritories;
     }
 
     public void updateTerritory(Territory tmp) {

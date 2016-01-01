@@ -3,6 +3,9 @@ package risk.components;
 import risk.data.Game;
 import risk.data.PatchPolygon;
 import risk.data.Territory;
+import risk.utils.listeners.MapChangeListener;
+import risk.utils.states.GameState;
+import risk.utils.states.SelectionState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,19 +14,33 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Map extends JComponent implements MouseListener {
+public class Map extends JComponent implements MouseListener, MapChangeListener {
 
     private Collection<Territory> territories;
     private ArrayList<PatchPolygon> areas;
     private Game game = null;
-    public Map(Collection<Territory> territories, Game game) {
+
+    private ArrayList<TerritoryComponent> currentTerritories = new ArrayList<>();
+    public Map(Game game) {
         super();
         this.addMouseListener(this);
+        this.setMap(game);
+    }
+
+    private void setMap(Game game) {
         this.game = game;
-        this.territories = territories;
+        this.territories = game.getTerritories();
         this.areas = new ArrayList<>();
+        for (TerritoryComponent terr : this.currentTerritories) {
+            this.remove(terr);
+        }
+        this.currentTerritories = new ArrayList<>();
         for (Territory tmp : this.territories) {
             this.areas.addAll(tmp.getPolygons());
+
+            TerritoryComponent territoryComponent = new TerritoryComponent(tmp);
+            this.add(territoryComponent);
+            this.currentTerritories.add(territoryComponent);
         }
     }
 
@@ -33,29 +50,52 @@ public class Map extends JComponent implements MouseListener {
         super.paintComponent(graphics);
         graphics.setColor(new Color(8, 114, 200));
         graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-        for (Territory tmp : this.territories) {
-            TerritoryComponent territoryComponent = new TerritoryComponent(tmp);
-            this.add(territoryComponent);
-        }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        String clicked = null;
-        for (PatchPolygon area : this.areas) {
-            if ( area.contains(e.getX() , e.getY()) ) {
-                clicked = area.getTerritory();
+        if (this.game.getState() instanceof SelectionState) {
+            String clicked = null;
+            for (PatchPolygon area : this.areas) {
+                if (area.contains(e.getX(), e.getY())) {
+                    clicked = area.getTerritory();
+                    break;
+                }
             }
-        }
-        for (Territory territory : this.territories) {
-            territory.setSelected(false);
-            if (territory.getName().equals(clicked)) {
-                territory.setSelected(true);
+            ArrayList<Territory> leftOnes = this.game.getLeftTerritories();
+            boolean changed = false;
+            for (Territory tmp : leftOnes) {
+                if (tmp.getName().equals(clicked)) {
+                    leftOnes.remove(tmp);
+                    changed = true;
+                    break;
+                }
             }
-            this.game.updateTerritory(territory);
+            if (changed) {
+                this.game.findTerritory(clicked).setPlayer(this.game.getCurrentPlayer(), 1);
+                this.game.setLeftTerritories(leftOnes);
+                this.repaint();
+                this.game.setNextPerson();
+            }
+
         }
-        this.repaint();
+        else if (this.game.getState() instanceof GameState) {
+            String clicked = null;
+            for (PatchPolygon area : this.areas) {
+                if (area.contains(e.getX(), e.getY())) {
+                    clicked = area.getTerritory();
+                    break;
+                }
+            }
+            for (Territory territory : this.territories) {
+                territory.setSelected(false);
+                if (territory.getName().equals(clicked)) {
+                    territory.setSelected(true);
+                }
+                this.game.updateTerritory(territory);
+            }
+            this.repaint();
+        }
     }
 
     @Override
@@ -76,5 +116,11 @@ public class Map extends JComponent implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    @Override
+    public void changeMap(Game game) {
+        this.setMap(game);
+        this.repaint();
     }
 }

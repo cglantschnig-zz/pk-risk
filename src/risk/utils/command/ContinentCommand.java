@@ -1,4 +1,4 @@
-package risk.utils;
+package risk.utils.command;
 
 import java.util.ArrayList;
 
