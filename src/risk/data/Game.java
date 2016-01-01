@@ -83,7 +83,7 @@ public class Game {
     public void setNextPerson() {
         if (this.leftTerritories.isEmpty()) {
             System.out.println("FINISHED SELECTION");
-            this.state.next();
+            this.state = this.state.next();
             return;
         }
         this.currentSelector = this.players[this.turn % this.players.length];
