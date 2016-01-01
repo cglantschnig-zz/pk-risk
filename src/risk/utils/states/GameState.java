@@ -1,9 +1,9 @@
 package risk.utils.states;
 
-public class GameState implements State {
+public class GameState implements IState {
 
     @Override
-    public State next() {
+    public IState next() {
         return null;
     }
 }

@@ -14,7 +14,6 @@ public class Computer extends Player {
 
         int randomIndex = (int)(Math.random() * leftTerritories.size());
         Territory assignedTerritory = leftTerritories.remove(randomIndex);
-        System.out.println(this.name + " -> " + assignedTerritory.getName());
         return assignedTerritory.getName();
 
     }

@@ -1,5 +1,29 @@
 package risk.utils.states;
 
-public interface State {
-    State next();
+import risk.utils.listeners.StateChangeListener;
+
+import java.util.ArrayList;
+
+public class State {
+    private IState state = null;
+    private ArrayList<StateChangeListener> listeners = new ArrayList<>();
+    public State(IState initialState) {
+        this.state = initialState;
+    }
+
+    public void addStateChangeListener(StateChangeListener listener) {
+        this.listeners.add(listener);
+    }
+
+    public IState getState() {
+        return this.state;
+    }
+
+    public void next() {
+        this.state = state.next();
+
+        for (StateChangeListener listener : this.listeners) {
+            listener.stateChanged(this.state);
+        }
+    }
 }
