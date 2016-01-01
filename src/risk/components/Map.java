@@ -3,6 +3,7 @@ package risk.components;
 import risk.data.Game;
 import risk.data.PatchPolygon;
 import risk.data.Territory;
+import risk.utils.listeners.ToolboxListener;
 import risk.utils.states.SelectionState;
 
 import javax.swing.*;
@@ -12,19 +13,33 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Map extends JComponent implements MouseListener {
+public class Map extends JComponent implements MouseListener, ToolboxListener {
 
     private Collection<Territory> territories;
     private ArrayList<PatchPolygon> areas;
     private Game game = null;
-    public Map(Collection<Territory> territories, Game game) {
+
+    private ArrayList<TerritoryComponent> currentTerritories = new ArrayList<>();
+    public Map(Game game) {
         super();
         this.addMouseListener(this);
+        this.setMap(game);
+    }
+
+    private void setMap(Game game) {
         this.game = game;
-        this.territories = territories;
+        this.territories = game.getTerritories();
         this.areas = new ArrayList<>();
+        for (TerritoryComponent terr : this.currentTerritories) {
+            this.remove(terr);
+        }
+        this.currentTerritories = new ArrayList<>();
         for (Territory tmp : this.territories) {
             this.areas.addAll(tmp.getPolygons());
+
+            TerritoryComponent territoryComponent = new TerritoryComponent(tmp);
+            this.add(territoryComponent);
+            this.currentTerritories.add(territoryComponent);
         }
     }
 
@@ -34,11 +49,6 @@ public class Map extends JComponent implements MouseListener {
         super.paintComponent(graphics);
         graphics.setColor(new Color(8, 114, 200));
         graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-        for (Territory tmp : this.territories) {
-            TerritoryComponent territoryComponent = new TerritoryComponent(tmp);
-            this.add(territoryComponent);
-        }
     }
 
     @Override
@@ -79,5 +89,11 @@ public class Map extends JComponent implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    @Override
+    public void changeMap(Game game) {
+        this.setMap(game);
+        this.repaint();
     }
 }

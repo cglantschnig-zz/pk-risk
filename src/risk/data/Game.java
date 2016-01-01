@@ -48,7 +48,7 @@ public class Game {
                         this.continent(new ContinentCommand(cmd));
                         break;
                     default:
-                        System.out.println("invalid command - " + cmd.original);
+                        System.out.println("invalid command: `" + cmd.original + "`");
                 }
             } catch (InvalidCommandException e) {
                 System.out.println(e);
