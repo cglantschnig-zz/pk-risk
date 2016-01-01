@@ -18,6 +18,8 @@ public class Game {
     private Map map; // Map reference
     private State state = new NewState();
 
+    private ArrayList<Territory> leftTerritories;
+
     public Game() {
         this("world.map");
     }
@@ -62,15 +64,15 @@ public class Game {
         // set Players
         this.players = new Player[5];
         this.players[0] = new Computer("Computer 1", new Color(255, 99, 72));
-        this.players[1] = new Computer("Computer 2", new Color(44, 255, 144));
-        this.players[2] = new Computer("Computer 3", new Color(179, 77, 255));
-        this.players[3] = new Computer("Computer 4", new Color(255, 210, 90));
-        this.players[4] = new Computer("Computer 5", new Color(63, 231, 255));
+        this.players[1] = new Person("Computer 2", new Color(44, 255, 144));
+        // this.players[2] = new Computer("Computer 3", new Color(179, 77, 255));
+        // this.players[3] = new Computer("Computer 4", new Color(255, 210, 90));
+        // this.players[4] = new Computer("Computer 5", new Color(63, 231, 255));
 
     }
 
     public void selectMap() {
-        ArrayList<Territory> leftTerritories = new ArrayList<>(this.territories.values());
+        leftTerritories = new ArrayList<>(this.territories.values());
         for (int i = 0; !leftTerritories.isEmpty(); i++) {
             Player tmp = this.players[i % this.players.length];
             Territory territory = this.findTerritory(tmp.chooseCountry(leftTerritories));
