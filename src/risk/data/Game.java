@@ -21,6 +21,10 @@ public class Game {
     public Game() {
         this("world.map");
     }
+    public Game(String mapFile, Game initiator) {
+        this(mapFile);
+        this.map = initiator.map;
+    }
 
     /**
      * 1. load map file and create Map data
@@ -72,6 +76,7 @@ public class Game {
             Territory territory = this.findTerritory(tmp.chooseCountry(leftTerritories));
             territory.setPlayer(tmp, 1);
         }
+        this.state = this.state.next();
         this.map.repaint();
     }
 

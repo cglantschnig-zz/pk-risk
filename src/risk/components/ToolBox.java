@@ -40,9 +40,10 @@ public class ToolBox extends JPanel implements ActionListener {
     public void actionPerformed (ActionEvent ae) {
         if(ae.getSource() == this.start){
             this.game.selectMap();
+
         } else if (ae.getSource() == this.selectMap) {
             System.out.println(this.selectMap.getSelectedItem().toString());
-            this.game = new Game(this.selectMap.getSelectedItem().toString());
+            this.game = new Game(this.selectMap.getSelectedItem().toString(), this.game);
 
             for (MapChangeListener listener : this.listeners) {
                 listener.changeMap(this.game);
