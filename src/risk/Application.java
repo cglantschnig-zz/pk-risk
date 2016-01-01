@@ -17,7 +17,7 @@ public class Application extends JFrame implements MapChangeListener {
     private Game game;
 
     public Application() {
-        super("Josette's Window");
+        super("Risiko");
 
         // initialize data
         this.game = new Game();
