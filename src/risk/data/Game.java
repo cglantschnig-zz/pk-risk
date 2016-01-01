@@ -2,6 +2,8 @@ package risk.data;
 
 import risk.components.Map;
 import risk.utils.command.*;
+import risk.utils.listeners.StateChangeListener;
+import risk.utils.states.IState;
 import risk.utils.states.NewState;
 import risk.utils.states.State;
 
@@ -16,7 +18,7 @@ public class Game {
     private HashMap<String, Continent> continents;
     private Player[] players;
     private Map map; // Map reference
-    private State state = new NewState();
+    private State state = new State(new NewState());
 
     private ArrayList<Territory> leftTerritories;
     private int turn = 0;
@@ -76,14 +78,14 @@ public class Game {
     public void selectMap() {
         this.leftTerritories = new ArrayList<>(this.territories.values());
         this.turn = 0;
-        this.state = this.state.next();
+        this.state.next();
         this.setNextPerson();
     }
 
     public void setNextPerson() {
         if (this.leftTerritories.isEmpty()) {
             System.out.println("FINISHED SELECTION");
-            this.state = this.state.next();
+            this.state.next();
             return;
         }
         this.currentSelector = this.players[this.turn % this.players.length];
@@ -96,6 +98,10 @@ public class Game {
         } else {
             this.turn += 1;
         }
+    }
+
+    public void addStateChangeListener(StateChangeListener listener) {
+        this.state.addStateChangeListener(listener);
     }
 
     public Player getCurrentPlayer() {
@@ -139,8 +145,8 @@ public class Game {
         this.continents.put(cmd.getContinent(), tmp);
     }
 
-    public State getState() {
-        return this.state;
+    public IState getState() {
+        return this.state.getState();
     }
 
     public Territory findTerritory(String country) {

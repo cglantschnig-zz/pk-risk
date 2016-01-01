@@ -27,6 +27,7 @@ public class Application extends JFrame implements MapChangeListener {
 
         this.toolBox.addToolboxListener(this);
         this.toolBox.addToolboxListener(this.map);
+        this.game.addStateChangeListener(this.toolBox);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
