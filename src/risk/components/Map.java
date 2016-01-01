@@ -21,6 +21,8 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
     private Game game = null;
 
     private ArrayList<TerritoryComponent> currentTerritories = new ArrayList<>();
+    private ArrayList<NeighborLineComponent> currentNeighbors = new ArrayList<>();
+
     public Map(Game game) {
         super();
         this.addMouseListener(this);
@@ -34,12 +36,25 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
         for (TerritoryComponent terr : this.currentTerritories) {
             this.remove(terr);
         }
+        for (NeighborLineComponent comp : this.currentNeighbors) {
+            this.remove(comp);
+        }
+        this.currentNeighbors = new ArrayList<>();
+        for (Territory tmp : this.territories) {
+            for (Territory neighbor : tmp.getNeighbors()) {
+                NeighborLineComponent neighborLineComponent = new NeighborLineComponent(tmp.getCapital(), neighbor.getCapital());
+                this.add(neighborLineComponent);
+                this.setComponentZOrder(neighborLineComponent, 0);
+                this.currentNeighbors.add(neighborLineComponent);
+            }
+        }
         this.currentTerritories = new ArrayList<>();
         for (Territory tmp : this.territories) {
             this.areas.addAll(tmp.getPolygons());
 
             TerritoryComponent territoryComponent = new TerritoryComponent(tmp);
             this.add(territoryComponent);
+            this.setComponentZOrder(territoryComponent, 1);
             this.currentTerritories.add(territoryComponent);
         }
     }

@@ -130,10 +130,9 @@ public class Game {
     private void neighborsOf(NeighborsOfCommand cmd) {
         Territory home = this.findTerritory(cmd.getCountry());
         for (String neighbor : cmd.getNeighbors()) {
-            home.addNeighbor(neighbor);
-
             Territory other = this.findTerritory(neighbor);
-            other.addNeighbor(cmd.getCountry());
+            home.addNeighbor(other);
+            other.addNeighbor(home);
             this.territories.put(neighbor, other);
         }
         this.territories.put(cmd.getCountry(), home);
