@@ -51,5 +51,7 @@ public class TerritoryComponent extends JComponent {
             graphics.drawPolyline(polygon.getX(), polygon.getY(), polygon.getLength());
         }
 
+        graphics.drawString(territory.getArmy().getArmycount() + "", this.territory.getCapital().x, this.territory.getCapital().y);
+
     }
 }

@@ -9,10 +9,11 @@ public class Territory {
     private String name;
     private ArrayList<Patch> patches;
     private Point capital;
-    private HashMap<String, String> neighbors;
+    private HashMap<String, Territory> neighbors;
     private Player player = null;
     private int units = 0;
     private boolean selected = false;
+    private Army army = new Army();
 
     public Territory(String name) {
         this.patches = new ArrayList<>();
@@ -37,11 +38,15 @@ public class Territory {
         this.capital = p;
     }
 
-    public void addNeighbor(String neighbor) {
-        this.neighbors.put(neighbor, neighbor);
+    public void addNeighbor(Territory neighbor) {
+        this.neighbors.put(neighbor.getName(), neighbor);
     }
 
-    public Collection<String> getNeighbors() {
+    public Army getArmy() {
+        return this.army;
+    }
+
+    public Collection<Territory> getNeighbors() {
         return this.neighbors.values();
     }
 
