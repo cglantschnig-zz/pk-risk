@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class ToolBox extends JPanel implements ActionListener {
     private JButton start = new JButton("Begin game");
     private JComboBox selectMap = new JComboBox();
+    private JLabel info = new JLabel();
     private Game game = null;
 
     private ArrayList<MapChangeListener> listeners = new ArrayList<MapChangeListener>();
@@ -39,9 +40,7 @@ public class ToolBox extends JPanel implements ActionListener {
 
     public void actionPerformed (ActionEvent ae) {
         if(ae.getSource() == this.start){
-            System.out.println("GAME STARTED");
             this.game.selectMap();
-
         } else if (ae.getSource() == this.selectMap) {
             System.out.println(this.selectMap.getSelectedItem().toString());
             this.game = new Game(this.selectMap.getSelectedItem().toString(), this.game);
