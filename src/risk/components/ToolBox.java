@@ -39,6 +39,7 @@ public class ToolBox extends JPanel implements ActionListener {
 
     public void actionPerformed (ActionEvent ae) {
         if(ae.getSource() == this.start){
+            System.out.println("GAME STARTED");
             this.game.selectMap();
 
         } else if (ae.getSource() == this.selectMap) {

@@ -4,6 +4,7 @@ import risk.data.Game;
 import risk.data.PatchPolygon;
 import risk.data.Territory;
 import risk.utils.listeners.MapChangeListener;
+import risk.utils.states.GameState;
 import risk.utils.states.SelectionState;
 
 import javax.swing.*;
@@ -58,6 +59,32 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
             for (PatchPolygon area : this.areas) {
                 if (area.contains(e.getX(), e.getY())) {
                     clicked = area.getTerritory();
+                    break;
+                }
+            }
+            ArrayList<Territory> leftOnes = this.game.getLeftTerritories();
+            boolean changed = false;
+            for (Territory tmp : leftOnes) {
+                if (tmp.getName().equals(clicked)) {
+                    leftOnes.remove(tmp);
+                    changed = true;
+                    break;
+                }
+            }
+            if (changed) {
+                this.game.findTerritory(clicked).setPlayer(this.game.getCurrentPlayer(), 1);
+                this.game.setLeftTerritories(leftOnes);
+                this.repaint();
+                this.game.setNextPerson();
+            }
+
+        }
+        else if (this.game.getState() instanceof GameState) {
+            String clicked = null;
+            for (PatchPolygon area : this.areas) {
+                if (area.contains(e.getX(), e.getY())) {
+                    clicked = area.getTerritory();
+                    break;
                 }
             }
             for (Territory territory : this.territories) {

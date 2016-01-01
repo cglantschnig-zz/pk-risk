@@ -19,6 +19,8 @@ public class Game {
     private State state = new NewState();
 
     private ArrayList<Territory> leftTerritories;
+    private int turn = 0;
+    private Player currentSelector = null;
 
     public Game() {
         this("world.map");
@@ -65,21 +67,39 @@ public class Game {
         this.players = new Player[5];
         this.players[0] = new Computer("Computer 1", new Color(255, 99, 72));
         this.players[1] = new Person("Computer 2", new Color(44, 255, 144));
-        // this.players[2] = new Computer("Computer 3", new Color(179, 77, 255));
-        // this.players[3] = new Computer("Computer 4", new Color(255, 210, 90));
-        // this.players[4] = new Computer("Computer 5", new Color(63, 231, 255));
+        this.players[2] = new Computer("Computer 3", new Color(179, 77, 255));
+        this.players[3] = new Computer("Computer 4", new Color(255, 210, 90));
+        this.players[4] = new Computer("Computer 5", new Color(63, 231, 255));
 
     }
 
     public void selectMap() {
-        leftTerritories = new ArrayList<>(this.territories.values());
-        for (int i = 0; !leftTerritories.isEmpty(); i++) {
-            Player tmp = this.players[i % this.players.length];
-            Territory territory = this.findTerritory(tmp.chooseCountry(leftTerritories));
-            territory.setPlayer(tmp, 1);
-        }
+        this.leftTerritories = new ArrayList<>(this.territories.values());
+        this.turn = 0;
         this.state = this.state.next();
-        this.map.repaint();
+        this.setNextPerson();
+    }
+
+    public void setNextPerson() {
+        if (this.leftTerritories.isEmpty()) {
+            System.out.println("FINISHED SELECTION");
+            this.state.next();
+            return;
+        }
+        this.currentSelector = this.players[this.turn % this.players.length];
+        if (this.currentSelector instanceof Computer) {
+            Territory territory = this.findTerritory(this.currentSelector.chooseCountry(leftTerritories));
+            territory.setPlayer(this.currentSelector, 1);
+            this.turn += 1;
+            this.map.repaint();
+            this.setNextPerson();
+        } else {
+            this.turn += 1;
+        }
+    }
+
+    public Player getCurrentPlayer() {
+        return this.currentSelector;
     }
 
     public void setMap(Map map) {
@@ -129,6 +149,14 @@ public class Game {
         } else {
             return new Territory(country);
         }
+    }
+
+    public ArrayList<Territory> getLeftTerritories() {
+        return this.leftTerritories;
+    }
+
+    public void setLeftTerritories(ArrayList<Territory> leftTerritories) {
+        this.leftTerritories = leftTerritories;
     }
 
     public void updateTerritory(Territory tmp) {

@@ -11,7 +11,6 @@ public class Person extends Player {
 
     @Override
     public String chooseCountry(ArrayList<Territory> leftTerritories) {
-        // TODO implement person choose
-        return "Test";
+        return null;
     }
 }
