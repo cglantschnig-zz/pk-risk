@@ -39,23 +39,27 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
         for (NeighborLineComponent comp : this.currentNeighbors) {
             this.remove(comp);
         }
-        this.currentNeighbors = new ArrayList<>();
-        for (Territory tmp : this.territories) {
-            for (Territory neighbor : tmp.getNeighbors()) {
-                NeighborLineComponent neighborLineComponent = new NeighborLineComponent(tmp.getCapital(), neighbor.getCapital());
-                this.add(neighborLineComponent);
-                this.setComponentZOrder(neighborLineComponent, 0);
-                this.currentNeighbors.add(neighborLineComponent);
-            }
-        }
+        int depthCounter = 0;
+
         this.currentTerritories = new ArrayList<>();
         for (Territory tmp : this.territories) {
             this.areas.addAll(tmp.getPolygons());
 
             TerritoryComponent territoryComponent = new TerritoryComponent(tmp);
             this.add(territoryComponent);
-            this.setComponentZOrder(territoryComponent, 1);
+            this.setComponentZOrder(territoryComponent, depthCounter++);
             this.currentTerritories.add(territoryComponent);
+        }
+
+        this.currentNeighbors = new ArrayList<>();
+        for (Territory tmp : this.territories) {
+            for (Territory neighbor : tmp.getNeighbors()) {
+                NeighborLineComponent neighborLineComponent = new NeighborLineComponent(tmp.getCapital(), neighbor.getCapital());
+                this.add(neighborLineComponent);
+                this.setComponentZOrder(neighborLineComponent, depthCounter++);
+                this.currentNeighbors.add(neighborLineComponent);
+                System.out.println(tmp.getName() + " -> " + neighbor.getName());
+            }
         }
     }
 

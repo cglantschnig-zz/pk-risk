@@ -51,7 +51,20 @@ public class TerritoryComponent extends JComponent {
             graphics.drawPolyline(polygon.getX(), polygon.getY(), polygon.getLength());
         }
 
-        graphics.drawString(territory.getArmy().getArmycount() + "", this.territory.getCapital().x, this.territory.getCapital().y);
+        if (territory.getArmy().getArmycount() > 0) {
+            graphics.setColor(new Color(196, 196, 196));
+            graphics.fillRect(this.territory.getCapital().x - 5, this.territory.getCapital().y - 10, 20, 20);
+            graphics.setColor(new Color(55, 55, 55));
+            graphics.drawRect(this.territory.getCapital().x - 5, this.territory.getCapital().y - 10, 20, 20);
+
+            if (territory.getArmy().getArmycount() > 9) {
+                graphics.drawString(territory.getArmy().getArmycount() + "", this.territory.getCapital().x - 3, this.territory.getCapital().y + 5);
+            } else {
+                graphics.drawString(territory.getArmy().getArmycount() + "", this.territory.getCapital().x + 1, this.territory.getCapital().y + 5);
+            }
+        }
+
+
 
     }
 }
