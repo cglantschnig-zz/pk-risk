@@ -30,6 +30,7 @@ public class Game {
     public Game(String mapFile, Game initiator) {
         this(mapFile);
         this.map = initiator.map;
+        this.state = new State(new NewState());
     }
 
     /**
