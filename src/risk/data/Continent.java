@@ -6,9 +6,9 @@ public class Continent {
 
     private String name;
     private int bonus = 0;
-    private ArrayList<String> countries = new ArrayList<>();
+    private ArrayList<Territory> countries = new ArrayList<>();
 
-    public Continent(String name, ArrayList<String> countries, int bonus) {
+    public Continent(String name, ArrayList<Territory> countries, int bonus) {
         this.name = name;
         this.countries = countries;
         this.bonus = bonus;
@@ -18,7 +18,7 @@ public class Continent {
         return bonus;
     }
 
-    public ArrayList<String> getCountries() {
+    public ArrayList<Territory> getCountries() {
         return countries;
     }
 }

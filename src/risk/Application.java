@@ -4,13 +4,16 @@ import risk.components.Map;
 import risk.components.ToolBox;
 import risk.data.Game;
 import risk.utils.listeners.MapChangeListener;
+import risk.utils.listeners.StateChangeListener;
+import risk.utils.states.GameState;
+import risk.utils.states.IState;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class Application extends JFrame implements MapChangeListener {
+public class Application extends JFrame implements MapChangeListener, StateChangeListener {
     private Map map;
     private ToolBox toolBox;
 
@@ -28,6 +31,7 @@ public class Application extends JFrame implements MapChangeListener {
         this.toolBox.addToolboxListener(this);
         this.toolBox.addToolboxListener(this.map);
         this.game.addStateChangeListener(this.toolBox);
+        this.game.addStateChangeListener(this);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -49,5 +53,12 @@ public class Application extends JFrame implements MapChangeListener {
     @Override
     public void changeMap(Game game) {
         this.game = game;
+    }
+
+    @Override
+    public void stateChanged(IState state) {
+        if (state instanceof GameState) {
+            this.game.showReinforcement();
+        }
     }
 }

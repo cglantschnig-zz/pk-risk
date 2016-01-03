@@ -11,10 +11,8 @@ public class Computer extends Player {
 
     @Override
     public String chooseCountry(ArrayList<Territory> leftTerritories) {
-
         int randomIndex = (int)(Math.random() * leftTerritories.size());
         Territory assignedTerritory = leftTerritories.remove(randomIndex);
         return assignedTerritory.getName();
-
     }
 }

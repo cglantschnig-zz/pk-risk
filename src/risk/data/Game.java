@@ -76,6 +76,12 @@ public class Game {
 
     }
 
+    public void showReinforcement() {
+        for (Player player : this.players) {
+            System.out.println(player.getName() + ": " + player.getReinforcementCount(this));
+        }
+    }
+
     public void selectMap() {
         this.leftTerritories = new ArrayList<>(this.territories.values());
         this.turn = 0;
@@ -140,7 +146,11 @@ public class Game {
     }
 
     private void continent(ContinentCommand cmd) {
-        Continent tmp = new Continent(cmd.getContinent(), cmd.getCountries(), cmd.getBonus());
+        ArrayList<Territory> territories = new ArrayList<>();
+        for (String country : cmd.getCountries()) {
+            territories.add(this.findTerritory(country));
+        }
+        Continent tmp = new Continent(cmd.getContinent(), territories, cmd.getBonus());
         this.continents.put(cmd.getContinent(), tmp);
     }
 
@@ -166,6 +176,10 @@ public class Game {
 
     public void updateTerritory(Territory tmp) {
         this.territories.put(tmp.getName(), tmp);
+    }
+
+    public Collection<Continent> getContinents() {
+        return this.continents.values();
     }
 
 }

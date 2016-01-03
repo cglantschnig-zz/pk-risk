@@ -22,6 +22,9 @@ public class NeighborLineComponent extends JComponent {
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
+        Graphics2D g2 = (Graphics2D) graphics;
+        g2.setStroke(new BasicStroke(2));
+        g2.setColor(new Color(200, 200, 200));
         if (this.isOverBorderShorter()) {
             graphics.drawLine(end.x, end.y, this.getWidth(), end.y);
             graphics.drawLine(0, start.y, start.x, start.y);

@@ -58,7 +58,6 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
                 this.add(neighborLineComponent);
                 this.setComponentZOrder(neighborLineComponent, depthCounter++);
                 this.currentNeighbors.add(neighborLineComponent);
-                System.out.println(tmp.getName() + " -> " + neighbor.getName());
             }
         }
     }
