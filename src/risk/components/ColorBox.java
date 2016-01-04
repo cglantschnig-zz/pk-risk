@@ -3,16 +3,25 @@ package risk.components;
 import javax.swing.*;
 import java.awt.*;
 
-public class ColorBox extends JComponent {
+public class ColorBox extends JPanel {
 
-    public void paintComponent(Graphics graphics)
-    {
-        int r= (int)Math.round((Math.random()*255));
-        int g= (int)Math.round((Math.random()*255));
-        int b= (int)Math.round((Math.random()*255));
+    private Color color = null;
 
-        graphics.setColor(new Color(r,g,b));
-        graphics.fillOval(100, 100, 40, 40);
+    public ColorBox() {
+        super();
+        this.setSize(this.getMaximumSize());
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+        if (this.color != null) {
+            graphics.setColor(this.color);
+            graphics.fillOval(0, 0, this.getHeight(), this.getHeight());
+        }
     }
 
 }
