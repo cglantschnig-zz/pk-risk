@@ -20,10 +20,17 @@ public class State {
     }
 
     public void next() {
-        this.state = state.next();
+        if (state != null) {
+            this.state = state.next();
 
-        for (StateChangeListener listener : this.listeners) {
-            listener.stateChanged(this.state);
+            for (StateChangeListener listener : this.listeners) {
+                listener.stateChanged(this.state);
+            }
         }
+    }
+
+    @Override
+    public String toString() {
+        return this.state.toString();
     }
 }
