@@ -98,7 +98,6 @@ public class Game {
 
     public void setNextPerson() {
         if (this.leftTerritories.isEmpty()) {
-            System.out.println(this.state);
             this.state.next();
             return;
         }
