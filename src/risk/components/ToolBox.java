@@ -2,6 +2,7 @@ package risk.components;
 
 import risk.data.Game;
 import risk.utils.listeners.MapChangeListener;
+import risk.utils.listeners.ReinforcementChangedListener;
 import risk.utils.listeners.StateChangeListener;
 import risk.utils.states.GameState;
 import risk.utils.states.IState;
@@ -13,7 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class ToolBox extends JPanel implements ActionListener, StateChangeListener {
+public class ToolBox extends JPanel implements ActionListener, StateChangeListener, ReinforcementChangedListener {
     private JButton start = new JButton("Spiel starten");
     private JComboBox selectMap = new JComboBox();
     private JLabel info = new JLabel();
@@ -49,6 +50,7 @@ public class ToolBox extends JPanel implements ActionListener, StateChangeListen
         selectMap.addActionListener(this);
 
         this.game.addPlayerChangedListener(this.playerInfo);
+        this.game.addReinforcementChangedListener(this);
     }
 
     public void addToolboxListener(MapChangeListener listener) {
@@ -62,10 +64,13 @@ public class ToolBox extends JPanel implements ActionListener, StateChangeListen
             this.game = new Game(this.selectMap.getSelectedItem().toString(), this.game);
             this.game.addPlayerChangedListener(this.playerInfo);
             this.game.addStateChangeListener(this);
+            this.game.addReinforcementChangedListener(this);
 
             for (MapChangeListener listener : this.listeners) {
                 listener.changeMap(this.game);
             }
+        } else if (ae.getSource() == this.next) {
+            this.game.next();
         }
     }
 
@@ -81,7 +86,13 @@ public class ToolBox extends JPanel implements ActionListener, StateChangeListen
         }
         else if (newState instanceof GameState) {
             this.next.setVisible(true);
-            this.info.setText("0 Verstärkung");
+            this.info.setText("Spielphase");
         }
+    }
+
+    @Override
+    public void reinforcementChanged(int count) {
+        this.info.setText(count + " Verstärkung verfügbar");
+        this.repaint();
     }
 }

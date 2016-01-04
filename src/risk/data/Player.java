@@ -46,4 +46,9 @@ public abstract class Player {
 
         return Math.floorDiv(territoryCount, 3) + bonus;
     }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }

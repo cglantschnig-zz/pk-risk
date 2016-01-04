@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class Application extends JFrame implements MapChangeListener, StateChangeListener {
+public class Application extends JFrame implements MapChangeListener {
     private Map map;
     private ToolBox toolBox;
 
@@ -31,7 +31,6 @@ public class Application extends JFrame implements MapChangeListener, StateChang
         this.toolBox.addToolboxListener(this);
         this.toolBox.addToolboxListener(this.map);
         this.game.addStateChangeListener(this.toolBox);
-        this.game.addStateChangeListener(this);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -55,10 +54,4 @@ public class Application extends JFrame implements MapChangeListener, StateChang
         this.game = game;
     }
 
-    @Override
-    public void stateChanged(IState state) {
-        if (state instanceof GameState) {
-            this.game.showReinforcement();
-        }
-    }
 }
