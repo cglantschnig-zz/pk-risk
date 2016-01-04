@@ -3,7 +3,9 @@ package risk.data;
 import risk.components.Map;
 import risk.utils.command.*;
 import risk.utils.listeners.PlayerChangedListener;
+import risk.utils.listeners.ReinforcementChangedListener;
 import risk.utils.listeners.StateChangeListener;
+import risk.utils.states.GameState;
 import risk.utils.states.IState;
 import risk.utils.states.NewState;
 import risk.utils.states.State;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class Game {
+public class Game implements StateChangeListener{
 
     private HashMap<String, Territory> territories;
     private HashMap<String, Continent> continents;
@@ -22,6 +24,7 @@ public class Game {
     private State state = new State(new NewState());
 
     private ArrayList<PlayerChangedListener> listeners = new ArrayList<>();
+    private ArrayList<ReinforcementChangedListener> reinforceListeners = new ArrayList<>();
 
     private ArrayList<Territory> leftTerritories;
     private int turn = 0;
@@ -69,6 +72,8 @@ public class Game {
             }
         }
 
+        this.addStateChangeListener(this);
+
         // set Players
         this.players = new Player[5];
         this.players[0] = new Computer("Computer 1", new Color(255, 99, 72));
@@ -79,9 +84,30 @@ public class Game {
 
     }
 
-    public void showReinforcement() {
-        for (Player player : this.players) {
-            System.out.println(player.getName() + ": " + player.getReinforcementCount(this));
+    /**
+     * performs the current move
+     */
+    public void next() {
+        this.currentSelector = this.players[this.turn % this.players.length];
+        this.turn += 1;
+        System.out.println(this.currentSelector + ": " + this.currentSelector.getReinforcementCount(this));
+        if (currentSelector instanceof Computer) {
+            // do nothing so far
+            this.next();
+        } else {
+            this.changeReinforcement(this.currentSelector.getReinforcementCount(this));
+            this.updatePlayer(this.currentSelector);
+        }
+    }
+
+    public void addReinforcementChangedListener(ReinforcementChangedListener listener) {
+        this.reinforceListeners.add(listener);
+    }
+
+    private void changeReinforcement(int count) {
+
+        for (ReinforcementChangedListener listener : this.reinforceListeners) {
+            listener.reinforcementChanged(count);
         }
     }
 
@@ -194,6 +220,15 @@ public class Game {
 
     public Collection<Continent> getContinents() {
         return this.continents.values();
+    }
+
+    @Override
+    public void stateChanged(IState newState) {
+        if (newState instanceof GameState) {
+            this.currentSelector = null;
+            this.turn = 0;
+            this.next();
+        }
     }
 
 }
