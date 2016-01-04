@@ -17,13 +17,15 @@ public class ToolBox extends JPanel implements ActionListener, StateChangeListen
     private JButton start = new JButton("Spiel starten");
     private JComboBox selectMap = new JComboBox();
     private JLabel info = new JLabel();
+    private PlayerBox playerInfo = new PlayerBox();
     private Game game = null;
+    private JButton next = new JButton("weiter");
 
     private ArrayList<MapChangeListener> listeners = new ArrayList<MapChangeListener>();
 
     public ToolBox(Game game) {
         super();
-        this.setLayout(new FlowLayout());
+        this.setSize(this.getWidth(), 100);
         this.game = game;
 
         String[] mapOptions = { "africa.map", "squares.map", "three-continents.map", "world.map" };
@@ -32,12 +34,21 @@ public class ToolBox extends JPanel implements ActionListener, StateChangeListen
         }
         this.selectMap.setSelectedItem("world.map");
 
+        playerInfo.setVisible(false);
         info.setVisible(false);
+        next.setVisible(false);
+
+        this.add(playerInfo);
         this.add(info);
         this.add(selectMap);
         this.add(start);
+        this.add(next);
+
+        next.addActionListener(this);
         start.addActionListener(this);
         selectMap.addActionListener(this);
+
+        this.game.addPlayerChangedListener(this.playerInfo);
     }
 
     public void addToolboxListener(MapChangeListener listener) {
@@ -48,8 +59,8 @@ public class ToolBox extends JPanel implements ActionListener, StateChangeListen
         if(ae.getSource() == this.start){
             this.game.selectMap();
         } else if (ae.getSource() == this.selectMap) {
-            System.out.println(this.selectMap.getSelectedItem().toString());
             this.game = new Game(this.selectMap.getSelectedItem().toString(), this.game);
+            this.game.addPlayerChangedListener(this.playerInfo);
 
             for (MapChangeListener listener : this.listeners) {
                 listener.changeMap(this.game);
@@ -62,12 +73,14 @@ public class ToolBox extends JPanel implements ActionListener, StateChangeListen
         if (newState instanceof SelectionState) {
             this.selectMap.setVisible(false);
             this.start.setVisible(false);
+            this.playerInfo.setVisible(true);
             this.info.setVisible(true);
-            this.info.setText("Länderauswahl");
+            this.info.setText("wähle ein Land aus!");
             this.repaint();
         }
         else if (newState instanceof GameState) {
-            this.info.setText("Spielphase");
+            this.next.setVisible(true);
+            this.info.setText("0 Verstärkung");
         }
     }
 }

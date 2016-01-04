@@ -2,6 +2,7 @@ package risk.data;
 
 import risk.components.Map;
 import risk.utils.command.*;
+import risk.utils.listeners.PlayerChangedListener;
 import risk.utils.listeners.StateChangeListener;
 import risk.utils.states.IState;
 import risk.utils.states.NewState;
@@ -19,6 +20,8 @@ public class Game {
     private Player[] players;
     private Map map; // Map reference
     private State state = new State(new NewState());
+
+    private ArrayList<PlayerChangedListener> listeners = new ArrayList<>();
 
     private ArrayList<Territory> leftTerritories;
     private int turn = 0;
@@ -82,6 +85,10 @@ public class Game {
         }
     }
 
+    public void addPlayerChangedListener(PlayerChangedListener listener) {
+        this.listeners.add(listener);
+    }
+
     public void selectMap() {
         this.leftTerritories = new ArrayList<>(this.territories.values());
         this.turn = 0;
@@ -103,6 +110,13 @@ public class Game {
             this.setNextPerson();
         } else {
             this.turn += 1;
+            this.updatePlayer(this.currentSelector);
+        }
+    }
+
+    private void updatePlayer(Player changedPlayer) {
+        for (PlayerChangedListener listener : this.listeners) {
+            listener.playerChanged(changedPlayer);
         }
     }
 
