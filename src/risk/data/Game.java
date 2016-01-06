@@ -5,10 +5,7 @@ import risk.utils.command.*;
 import risk.utils.listeners.PlayerChangedListener;
 import risk.utils.listeners.ReinforcementChangedListener;
 import risk.utils.listeners.StateChangeListener;
-import risk.utils.states.GameState;
-import risk.utils.states.IState;
-import risk.utils.states.NewState;
-import risk.utils.states.State;
+import risk.utils.states.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -88,14 +85,19 @@ public class Game implements StateChangeListener{
      * performs the current move
      */
     public void next() {
+        this.state.next();
         this.currentSelector = this.players[this.turn % this.players.length];
         this.turn += 1;
-        System.out.println(this.currentSelector + ": " + this.currentSelector.getReinforcementCount(this));
         if (currentSelector instanceof Computer) {
             // do nothing so far
+            // simulate his fights
+            this.state.next();
+
             this.next();
         } else {
-            this.changeReinforcement(this.currentSelector.getReinforcementCount(this));
+            int availableReinforcement = this.currentSelector.getReinforcementCount(this);
+            this.currentSelector.setLeftReinforcement(availableReinforcement);
+            this.changeReinforcement(availableReinforcement);
             this.updatePlayer(this.currentSelector);
         }
     }
@@ -104,7 +106,7 @@ public class Game implements StateChangeListener{
         this.reinforceListeners.add(listener);
     }
 
-    private void changeReinforcement(int count) {
+    public void changeReinforcement(int count) {
 
         for (ReinforcementChangedListener listener : this.reinforceListeners) {
             listener.reinforcementChanged(count);
@@ -120,6 +122,10 @@ public class Game implements StateChangeListener{
         this.turn = 0;
         this.state.next();
         this.setNextPerson();
+    }
+
+    public void nextState() {
+        this.state.next();
     }
 
     public void setNextPerson() {
@@ -140,7 +146,7 @@ public class Game implements StateChangeListener{
         }
     }
 
-    private void updatePlayer(Player changedPlayer) {
+    public void updatePlayer(Player changedPlayer) {
         for (PlayerChangedListener listener : this.listeners) {
             listener.playerChanged(changedPlayer);
         }

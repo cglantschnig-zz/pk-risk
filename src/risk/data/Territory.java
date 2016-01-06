@@ -82,6 +82,10 @@ public class Territory {
         return selected;
     }
 
+    public void addUnit() {
+        this.units += 1;
+    }
+
     @Override
     public String toString() {
         String params = "";
