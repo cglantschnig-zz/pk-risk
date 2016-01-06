@@ -4,9 +4,7 @@ import risk.data.Game;
 import risk.utils.listeners.MapChangeListener;
 import risk.utils.listeners.ReinforcementChangedListener;
 import risk.utils.listeners.StateChangeListener;
-import risk.utils.states.GameState;
-import risk.utils.states.IState;
-import risk.utils.states.SelectionState;
+import risk.utils.states.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,14 +82,16 @@ public class ToolBox extends JPanel implements ActionListener, StateChangeListen
             this.info.setText("wähle ein Land aus!");
             this.repaint();
         }
-        else if (newState instanceof GameState) {
+        else if (newState instanceof ReinforcementState) {
             this.next.setVisible(true);
+        }
+        else if (newState instanceof FightState) {
+            this.info.setText("Kampfphase");
         }
     }
 
     @Override
     public void reinforcementChanged(int count) {
-        System.out.println("haha");
         this.info.setText(count + " Verstärkung verfügbar");
         this.repaint();
     }

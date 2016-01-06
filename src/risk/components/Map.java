@@ -2,9 +2,12 @@ package risk.components;
 
 import risk.data.Game;
 import risk.data.PatchPolygon;
+import risk.data.Player;
 import risk.data.Territory;
 import risk.utils.listeners.MapChangeListener;
+import risk.utils.states.FightState;
 import risk.utils.states.GameState;
+import risk.utils.states.ReinforcementState;
 import risk.utils.states.SelectionState;
 
 import javax.swing.*;
@@ -97,7 +100,27 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
             }
 
         }
-        else if (this.game.getState() instanceof GameState) {
+        else if (this.game.getState() instanceof ReinforcementState) {
+            String clicked = null;
+            for (PatchPolygon area : this.areas) {
+                if (area.contains(e.getX(), e.getY())) {
+                    clicked = area.getTerritory();
+                    break;
+                }
+            }
+
+            if (clicked != null) {
+                Territory territory = this.game.findTerritory(clicked);
+                Player currentPlayer = this.game.getCurrentPlayer();
+                if (territory.getPlayer() == this.game.getCurrentPlayer()) {
+                    territory.addUnit();
+                    currentPlayer.takeReinforcement(this.game);
+                    this.game.updateTerritory(territory);
+                    this.repaint();
+                }
+            }
+        }
+        else if (this.game.getState() instanceof FightState) {
             String clicked = null;
             for (PatchPolygon area : this.areas) {
                 if (area.contains(e.getX(), e.getY())) {

@@ -8,6 +8,8 @@ public abstract class Player {
     public String name;
     public Color color;
 
+    private int leftReinforcement = 0;
+
     public Player(String name, Color color) {
         this.name = name;
         this.color = color;
@@ -45,6 +47,18 @@ public abstract class Player {
         }
 
         return Math.floorDiv(territoryCount, 3) + bonus;
+    }
+
+    public void takeReinforcement(Game game) {
+        this.leftReinforcement -= 1;
+        if (this.leftReinforcement == 0) {
+            game.nextState();
+        }
+        game.changeReinforcement(this.leftReinforcement);
+    }
+
+    public void setLeftReinforcement(int leftReinforcement) {
+        this.leftReinforcement = leftReinforcement;
     }
 
     @Override
