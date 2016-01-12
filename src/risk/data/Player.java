@@ -7,6 +7,7 @@ public abstract class Player {
 
     public String name;
     public Color color;
+    public boolean isAttack = false;
 
     private int leftReinforcement = 0;
 
@@ -45,8 +46,7 @@ public abstract class Player {
                 bonus += continent.getBonus();
             }
         }
-
-        return Math.floorDiv(territoryCount, 3) + bonus;
+        return  Math.floorDiv(territoryCount, 3) + bonus;
     }
 
     public void takeReinforcement(Game game) {
@@ -59,6 +59,10 @@ public abstract class Player {
 
     public void setLeftReinforcement(int leftReinforcement) {
         this.leftReinforcement = leftReinforcement;
+    }
+
+    public int getLeftReinforcement(){
+        return this.leftReinforcement;
     }
 
     @Override

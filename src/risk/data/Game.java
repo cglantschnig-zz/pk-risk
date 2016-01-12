@@ -7,6 +7,7 @@ import risk.utils.listeners.ReinforcementChangedListener;
 import risk.utils.listeners.StateChangeListener;
 import risk.utils.states.*;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,6 +27,8 @@ public class Game implements StateChangeListener{
     private ArrayList<Territory> leftTerritories;
     private int turn = 0;
     private Player currentSelector = null;
+
+    public Territory attack_territory = null;
 
     public Game() {
         this("world.map");
@@ -72,12 +75,12 @@ public class Game implements StateChangeListener{
         this.addStateChangeListener(this);
 
         // set Players
-        this.players = new Player[5];
-        this.players[0] = new Computer("Computer 1", new Color(255, 99, 72));
-        this.players[1] = new Person("Computer 2", new Color(44, 255, 144));
-        this.players[2] = new Computer("Computer 3", new Color(179, 77, 255));
-        this.players[3] = new Computer("Computer 4", new Color(255, 210, 90));
-        this.players[4] = new Computer("Computer 5", new Color(90, 119, 121));
+        this.players = new Player[2];
+        this.players[0] = new Person("Person", new Color(44, 255, 144));
+        this.players[1] = new Computer("Computer 1", new Color(255, 99, 72));
+        //this.players[2] = new Computer("Computer 3", new Color(179, 77, 255));
+        //this.players[3] = new Computer("Computer 4", new Color(255, 210, 90));
+        //this.players[4] = new Computer("Computer 5", new Color(90, 119, 121));
 
     }
 
@@ -88,18 +91,111 @@ public class Game implements StateChangeListener{
         this.state.next();
         this.currentSelector = this.players[this.turn % this.players.length];
         this.turn += 1;
+
+        if (isAllPlayersAttacked()){
+            for (Player player : players){
+                player.setLeftReinforcement(player.getReinforcementCount(this));
+            }
+            shareReinforcement();
+        }
+
+        if (checkEnd()){
+
+            JOptionPane.showMessageDialog(null, "" + getCurrentPlayer().getName(),"Gewinner" , JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
         if (currentSelector instanceof Computer) {
             // do nothing so far
             // simulate his fights
-            this.state.next();
+            attackSimulate();
 
+            this.state.next();
             this.next();
+
         } else {
             int availableReinforcement = this.currentSelector.getReinforcementCount(this);
             this.currentSelector.setLeftReinforcement(availableReinforcement);
             this.changeReinforcement(availableReinforcement);
             this.updatePlayer(this.currentSelector);
+            this.getCurrentPlayer().isAttack = true;
         }
+
+
+    }
+
+    public boolean isAllPlayersAttacked(){
+
+        for (Player player : players){
+            if (!player.isAttack){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean checkEnd(){
+        ArrayList<Territory> allTerritory = new ArrayList<Territory>(territories.values());
+        Player player = allTerritory.get(0).getPlayer();
+        for (Territory ter : allTerritory){
+            if (ter.getPlayer() != player){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void attackSimulate(){
+        ArrayList<Territory> territorysByPlayer_tmp = this.findTerritorysByPlayer(this.getCurrentPlayer());
+        ArrayList<Territory> territorysByPlayer = new ArrayList<>();
+
+        for (Territory ter : territorysByPlayer_tmp){
+            if (ter.getUnits() >= 2){
+                territorysByPlayer.add(ter);
+            }
+        }
+
+        if (territorysByPlayer.size() == 0){
+            getCurrentPlayer().isAttack = true;
+            return;
+        }
+        Territory selected;
+        ArrayList<Territory> neighborbySelected = new ArrayList<>();
+        boolean true_selected = false;
+
+        do {
+            selected = territorysByPlayer.get((int) Math.random() * territorysByPlayer.size());
+            ArrayList<Territory> neighborbySelected_tmp = new ArrayList<Territory>(selected.getNeighbors());
+            for (Territory ter : neighborbySelected_tmp) {
+                if (ter.getPlayer() != getCurrentPlayer()) {
+                    neighborbySelected.add(ter);
+                }
+            }
+
+            if(neighborbySelected.size() == 0) {
+                territorysByPlayer.remove(selected);
+            }
+            else{
+                true_selected = true;
+            }
+
+        }while (!true_selected && territorysByPlayer.size() > 0);
+
+        if(true_selected) {
+            Territory enemy = neighborbySelected.get((int) Math.random() * neighborbySelected.size());
+            selected.attack(enemy);
+            if (enemy.getUnits() == 0){
+                enemy.setPlayer(selected.getPlayer(),selected.getUnits()-1);
+                selected.setUnits(1);
+                this.map.repaint();
+            }
+            attackSimulate();
+        }
+        else{
+            getCurrentPlayer().isAttack = true;
+            turn++;
+        }
+
     }
 
     public void addReinforcementChangedListener(ReinforcementChangedListener listener) {
@@ -131,6 +227,10 @@ public class Game implements StateChangeListener{
     public void setNextPerson() {
         if (this.leftTerritories.isEmpty()) {
             this.state.next();
+            for (Player player : players){
+                player.setLeftReinforcement(player.getReinforcementCount(this));
+            }
+            shareReinforcement();
             return;
         }
         this.currentSelector = this.players[this.turn % this.players.length];
@@ -143,6 +243,36 @@ public class Game implements StateChangeListener{
         } else {
             this.turn += 1;
             this.updatePlayer(this.currentSelector);
+        }
+    }
+
+    public void shareReinforcement(){
+        boolean checkPlayers = false;
+
+        for (Player player : this.players){
+            System.out.println(player.getName()+ "->"+player.getLeftReinforcement() );
+            if (player.getLeftReinforcement() > 0){
+                checkPlayers = true;
+                break;
+            }
+        }
+        if (!checkPlayers){
+            //this.next();
+            return;
+        }
+        this.currentSelector = this.players[this.turn++ % this.players.length];
+        if (this.currentSelector instanceof Computer) {
+
+            ArrayList<Territory> player_territorys = findTerritorysByPlayer(getCurrentPlayer());
+            int player_reinforcement = getCurrentPlayer().getLeftReinforcement();
+            while (player_reinforcement > 0){
+
+                player_territorys.get((int)(Math.random()*player_territorys.size())).addUnit();
+                player_reinforcement--;
+            }
+            getCurrentPlayer().setLeftReinforcement(0);
+            this.map.repaint();
+            shareReinforcement();
         }
     }
 
@@ -210,6 +340,17 @@ public class Game implements StateChangeListener{
         } else {
             return new Territory(country);
         }
+    }
+    public ArrayList<Territory> findTerritorysByPlayer(Player player) {
+
+        ArrayList<Territory> result = new ArrayList<>();
+        for (Territory ter : territories.values()){
+            if (ter.getPlayer() == player){
+                result.add(ter);
+            }
+        }
+
+        return result;
     }
 
     public ArrayList<Territory> getLeftTerritories() {

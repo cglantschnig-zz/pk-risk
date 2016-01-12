@@ -135,6 +135,29 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
                 }
                 this.game.updateTerritory(territory);
             }
+
+
+            if (clicked != null) {
+
+                if (this.game.attack_territory == null) {
+                    Territory selected = this.game.findTerritory(clicked);
+                    if (this.game.getCurrentPlayer() == selected.getPlayer() && selected.getUnits() > 1) {
+                        this.game.attack_territory = selected;
+                    }
+                } else {
+                    Territory enemy = this.game.findTerritory(clicked);
+
+                    if (this.game.getCurrentPlayer() != enemy.getPlayer() && this.game.attack_territory.isNeighbor(enemy.getName())){
+                        this.game.attack_territory.attack(enemy);
+
+                        if (enemy.getUnits() == 0){
+                            enemy.setPlayer(game.getCurrentPlayer(), this.game.attack_territory.getUnits()-1);
+                            this.game.attack_territory.setUnits(1);
+                        }
+                        this.game.attack_territory = null;
+                    }
+                }
+            }
             this.repaint();
         }
     }
