@@ -83,10 +83,11 @@ public class ToolBox extends JPanel implements ActionListener, StateChangeListen
             this.repaint();
         }
         else if (newState instanceof ReinforcementState) {
-            this.next.setVisible(true);
+            this.next.setVisible(false);
         }
         else if (newState instanceof FightState) {
             this.info.setText("Kampfphase");
+            this.next.setVisible(true);
         }
     }
 

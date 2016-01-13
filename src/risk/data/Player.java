@@ -46,7 +46,8 @@ public abstract class Player {
                 bonus += continent.getBonus();
             }
         }
-        return  Math.floorDiv(territoryCount, 3) + bonus;
+        //Math.floorDiv(territoryCount, 3)
+        return   territoryCount / 3 + bonus;
     }
 
     public void takeReinforcement(Game game) {

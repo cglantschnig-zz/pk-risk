@@ -13,7 +13,6 @@ public class Territory {
     private Player player = null;
     private int units = 0;
     private boolean selected = false;
-    private Army army = new Army();
 
     public Territory(String name) {
         this.patches = new ArrayList<>();
@@ -40,10 +39,6 @@ public class Territory {
 
     public void addNeighbor(Territory neighbor) {
         this.neighbors.put(neighbor.getName(), neighbor);
-    }
-
-    public Army getArmy() {
-        return this.army;
     }
 
     public Collection<Territory> getNeighbors() {
@@ -102,9 +97,12 @@ public class Territory {
 
     public void attack(Territory enemy){
         System.out.println("Start attackt:" + this.getName()+"(" +this.getUnits()+ ")" + "->" + enemy.getName() + "(" + enemy.getUnits()+ ")");
+
+        int attack_count = 0, enemy_count = 0;
+
         while (this.getUnits() > 1 && enemy.getUnits() > 0){
-            int attack_count = this.getUnits()-1>3 ? 3 : this.getUnits()-1;
-            int enemy_count = enemy.getUnits() > 2 ? 2 : enemy.getUnits();
+            attack_count = this.getUnits()-1>3 ? 3 : this.getUnits()-1;
+            enemy_count = enemy.getUnits() > 2 ? 2 : enemy.getUnits();
 
             this.setUnits(this.getUnits()-attack_count);
             enemy.setUnits(enemy.getUnits() - enemy_count);
@@ -123,7 +121,12 @@ public class Territory {
             this.setUnits(this.getUnits() + attack_count);
             enemy.setUnits(enemy.getUnits() + enemy_count);
 
+        }
 
+
+        if (enemy.getUnits() == 0){
+            enemy.setPlayer(this.getPlayer(), attack_count);
+            this.setUnits(this.getUnits() - attack_count);
         }
         System.out.println("End attackt:" + this.getName()+"(" +this.getUnits()+ ")" + "->" + enemy.getName() + "(" + enemy.getUnits()+ ")");
     }

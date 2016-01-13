@@ -29,6 +29,7 @@ public class Game implements StateChangeListener{
     private Player currentSelector = null;
 
     public Territory attack_territory = null;
+    public Round round;
 
     public Game() {
         this("world.map");
@@ -75,13 +76,14 @@ public class Game implements StateChangeListener{
         this.addStateChangeListener(this);
 
         // set Players
-        this.players = new Player[2];
+        this.players = new Player[5];
         this.players[0] = new Person("Person", new Color(44, 255, 144));
         this.players[1] = new Computer("Computer 1", new Color(255, 99, 72));
-        //this.players[2] = new Computer("Computer 3", new Color(179, 77, 255));
-        //this.players[3] = new Computer("Computer 4", new Color(255, 210, 90));
-        //this.players[4] = new Computer("Computer 5", new Color(90, 119, 121));
+        this.players[2] = new Computer("Computer 3", new Color(179, 77, 255));
+        this.players[3] = new Computer("Computer 4", new Color(255, 210, 90));
+        this.players[4] = new Computer("Computer 5", new Color(90, 119, 121));
 
+        this.round = new Round(players);
     }
 
     /**
@@ -92,21 +94,24 @@ public class Game implements StateChangeListener{
         this.currentSelector = this.players[this.turn % this.players.length];
         this.turn += 1;
 
-        if (isAllPlayersAttacked()){
+        if (round.isAllPlayersAttacked()){
             for (Player player : players){
                 player.setLeftReinforcement(player.getReinforcementCount(this));
             }
             shareReinforcement();
+            round = new Round(players);
         }
 
         if (checkEnd()){
-
             JOptionPane.showMessageDialog(null, "" + getCurrentPlayer().getName(),"Gewinner" , JOptionPane.INFORMATION_MESSAGE);
             return;
         }
+
         if (currentSelector instanceof Computer) {
             // do nothing so far
             // simulate his fights
+
+
             attackSimulate();
 
             this.state.next();
@@ -116,23 +121,12 @@ public class Game implements StateChangeListener{
             int availableReinforcement = this.currentSelector.getReinforcementCount(this);
             this.currentSelector.setLeftReinforcement(availableReinforcement);
             this.changeReinforcement(availableReinforcement);
-            this.updatePlayer(this.currentSelector);
-            this.getCurrentPlayer().isAttack = true;
+            this.updatePlayer(getCurrentPlayer());
+            round.setAttackEnd(getCurrentPlayer());
         }
-
 
     }
 
-    public boolean isAllPlayersAttacked(){
-
-        for (Player player : players){
-            if (!player.isAttack){
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     public boolean checkEnd(){
         ArrayList<Territory> allTerritory = new ArrayList<Territory>(territories.values());
@@ -146,6 +140,18 @@ public class Game implements StateChangeListener{
     }
 
     public void attackSimulate(){
+        System.out.println("11111");
+        if (round.isAttacked( getCurrentPlayer() )) {
+            System.out.println("22222");
+            if(!round.isAllPlayersAttacked()) {
+                System.out.println("33333");
+                turn++;
+                this.currentSelector = this.players[this.turn % this.players.length];
+                attackSimulate();
+            }
+            return;
+        }
+
         ArrayList<Territory> territorysByPlayer_tmp = this.findTerritorysByPlayer(this.getCurrentPlayer());
         ArrayList<Territory> territorysByPlayer = new ArrayList<>();
 
@@ -156,7 +162,7 @@ public class Game implements StateChangeListener{
         }
 
         if (territorysByPlayer.size() == 0){
-            getCurrentPlayer().isAttack = true;
+            round.setAttackEnd(getCurrentPlayer());
             return;
         }
         Territory selected;
@@ -184,15 +190,12 @@ public class Game implements StateChangeListener{
         if(true_selected) {
             Territory enemy = neighborbySelected.get((int) Math.random() * neighborbySelected.size());
             selected.attack(enemy);
-            if (enemy.getUnits() == 0){
-                enemy.setPlayer(selected.getPlayer(),selected.getUnits()-1);
-                selected.setUnits(1);
-                this.map.repaint();
-            }
+
+            this.map.repaint();
             attackSimulate();
         }
         else{
-            getCurrentPlayer().isAttack = true;
+            round.setAttackEnd(getCurrentPlayer());
             turn++;
         }
 
@@ -250,14 +253,13 @@ public class Game implements StateChangeListener{
         boolean checkPlayers = false;
 
         for (Player player : this.players){
-            System.out.println(player.getName()+ "->"+player.getLeftReinforcement() );
             if (player.getLeftReinforcement() > 0){
                 checkPlayers = true;
                 break;
             }
         }
         if (!checkPlayers){
-            //this.next();
+            //this.round = new Round(players);
             return;
         }
         this.currentSelector = this.players[this.turn++ % this.players.length];
@@ -342,7 +344,6 @@ public class Game implements StateChangeListener{
         }
     }
     public ArrayList<Territory> findTerritorysByPlayer(Player player) {
-
         ArrayList<Territory> result = new ArrayList<>();
         for (Territory ter : territories.values()){
             if (ter.getPlayer() == player){
