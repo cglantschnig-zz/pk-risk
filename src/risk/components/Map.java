@@ -1,9 +1,6 @@
 package risk.components;
 
-import risk.data.Game;
-import risk.data.PatchPolygon;
-import risk.data.Player;
-import risk.data.Territory;
+import risk.data.*;
 import risk.utils.listeners.MapChangeListener;
 import risk.utils.states.FightState;
 import risk.utils.states.GameState;
@@ -93,7 +90,7 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
                 }
             }
             if (changed) {
-                this.game.findTerritory(clicked).setPlayer(this.game.getCurrentPlayer(), 1);
+                this.game.findTerritory(clicked).setPlayer(this.game.getCurrentPlayer(), new Unit());
                 this.game.setLeftTerritories(leftOnes);
                 this.repaint();
                 this.game.setNextPerson();
@@ -113,7 +110,7 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
                 Territory territory = this.game.findTerritory(clicked);
                 Player currentPlayer = this.game.getCurrentPlayer();
                 if (territory.getPlayer() == this.game.getCurrentPlayer()) {
-                    territory.addUnit();
+                    territory.addUnit(new Unit());
                     currentPlayer.takeReinforcement(this.game);
                     this.game.updateTerritory(territory);
                     this.repaint();

@@ -136,7 +136,7 @@ public class Game implements StateChangeListener{
         this.currentSelector = this.players[this.turn % this.players.length];
         if (this.currentSelector instanceof Computer) {
             Territory territory = this.findTerritory(this.currentSelector.chooseCountry(leftTerritories));
-            territory.setPlayer(this.currentSelector, 1);
+            territory.setPlayer(this.currentSelector, new Unit());
             this.turn += 1;
             this.map.repaint();
             this.setNextPerson();

@@ -11,9 +11,8 @@ public class Territory {
     private Point capital;
     private HashMap<String, Territory> neighbors;
     private Player player = null;
-    private int units = 0;
+    private ArrayList<Unit> units = new ArrayList<>();
     private boolean selected = false;
-    private Army army = new Army();
 
     public Territory(String name) {
         this.patches = new ArrayList<>();
@@ -21,9 +20,10 @@ public class Territory {
         this.name = name;
     }
 
-    public void setPlayer(Player player, int units) {
+    public void setPlayer(Player player, Unit unit) {
         this.player = player;
-        this.units = units;
+        this.units = new ArrayList<>();
+        this.units.add(unit);
     }
 
     public void setSelected(boolean selected) {
@@ -40,10 +40,6 @@ public class Territory {
 
     public void addNeighbor(Territory neighbor) {
         this.neighbors.put(neighbor.getName(), neighbor);
-    }
-
-    public Army getArmy() {
-        return this.army;
     }
 
     public Collection<Territory> getNeighbors() {
@@ -74,16 +70,16 @@ public class Territory {
         return player;
     }
 
-    public int getUnits() {
+    public ArrayList<Unit> getUnits() {
         return units;
+    }
+
+    public void addUnit(Unit unit) {
+        this.units.add(unit);
     }
 
     public boolean isSelected() {
         return selected;
-    }
-
-    public void addUnit() {
-        this.units += 1;
     }
 
     @Override
