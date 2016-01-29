@@ -4,7 +4,9 @@ import risk.data.Game;
 import risk.utils.listeners.MapChangeListener;
 import risk.utils.listeners.ReinforcementChangedListener;
 import risk.utils.listeners.StateChangeListener;
-import risk.utils.states.*;
+import risk.utils.states.GameState;
+import risk.utils.states.IState;
+import risk.utils.states.SelectionState;
 
 import javax.swing.*;
 import java.awt.*;

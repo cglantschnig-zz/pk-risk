@@ -9,8 +9,6 @@ public abstract class Player {
     public Color color;
     public boolean isAttack = false;
 
-    private int leftReinforcement = 0;
-
     public Player(String name, Color color) {
         this.name = name;
         this.color = color;
