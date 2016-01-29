@@ -68,7 +68,9 @@ public class ToolBox extends JPanel implements ActionListener, StateChangeListen
                 listener.changeMap(this.game);
             }
         } else if (ae.getSource() == this.next) {
-            this.game.next();
+            if (this.game.getState() instanceof FightState) {
+                this.game.next();
+            }
         }
     }
 

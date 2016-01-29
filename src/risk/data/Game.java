@@ -89,9 +89,25 @@ public class Game implements StateChangeListener{
         this.currentSelector = this.players[this.turn % this.players.length];
         this.turn += 1;
         if (currentSelector instanceof Computer) {
-            // do nothing so far
-            // simulate his fights
+
+            // set his reinforcements
+            ArrayList<Territory> computerTerritories = new ArrayList<>();
+            for (Territory territory : this.territories.values()) {
+                if (territory.getPlayer() == this.currentSelector) {
+                    computerTerritories.add(territory);
+                }
+            }
+            int reinforcementCount = this.currentSelector.getReinforcementCount(this);
+            for (int i = 0; i < reinforcementCount; i++) {
+                int randomIndex = (int)(Math.random() * computerTerritories.size());
+                Territory tmpTerritory = computerTerritories.get(randomIndex);
+                tmpTerritory.addUnit(new Unit());
+                this.territories.put(tmpTerritory.getName(), tmpTerritory);
+            }
+            this.map.repaint();
+
             this.state.next();
+            // simulate his fights
 
             this.next();
         } else {
