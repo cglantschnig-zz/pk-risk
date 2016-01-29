@@ -2,9 +2,12 @@ package risk.components;
 
 import risk.data.Game;
 import risk.data.PatchPolygon;
+import risk.data.Player;
 import risk.data.Territory;
 import risk.utils.listeners.MapChangeListener;
+import risk.utils.states.FightState;
 import risk.utils.states.GameState;
+import risk.utils.states.ReinforcementState;
 import risk.utils.states.SelectionState;
 
 import javax.swing.*;
@@ -97,7 +100,27 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
             }
 
         }
-        else if (this.game.getState() instanceof GameState) {
+        else if (this.game.getState() instanceof ReinforcementState) {
+            String clicked = null;
+            for (PatchPolygon area : this.areas) {
+                if (area.contains(e.getX(), e.getY())) {
+                    clicked = area.getTerritory();
+                    break;
+                }
+            }
+
+            if (clicked != null) {
+                Territory territory = this.game.findTerritory(clicked);
+                Player currentPlayer = this.game.getCurrentPlayer();
+                if (territory.getPlayer() == this.game.getCurrentPlayer()) {
+                    territory.addUnit();
+                    currentPlayer.takeReinforcement(this.game);
+                    this.game.updateTerritory(territory);
+                    this.repaint();
+                }
+            }
+        }
+        else if (this.game.getState() instanceof FightState) {
             String clicked = null;
             for (PatchPolygon area : this.areas) {
                 if (area.contains(e.getX(), e.getY())) {
@@ -111,43 +134,6 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
                     territory.setSelected(true);
                 }
                 this.game.updateTerritory(territory);
-            }
-
-
-            if (clicked != null) {
-                Territory territory = this.game.findTerritory(clicked);
-
-
-                if(SwingUtilities.isRightMouseButton(e)){
-                    if (game.attack_territory!=null
-                            && territory.getPlayer()==game.getCurrentPlayer()
-                            && game.attack_territory.isNeighbor(territory.getName())){
-
-                        if(game.round.isMoveable(game.getCurrentPlayer(),game.attack_territory)
-                                && game.round.isMoveable(game.getCurrentPlayer(),territory)){
-
-                            game.round.setMove(game.getCurrentPlayer(), game.attack_territory, territory);
-
-                            int from_army = game.attack_territory.getUnits();
-                            if(from_army>1){
-                                territory.setUnits(territory.getUnits() + from_army - 1);
-                                game.attack_territory.setUnits(1);
-                            }
-                        }
-                    }
-                }
-
-                if (this.game.getCurrentPlayer() == territory.getPlayer()) {
-                    if (territory.getUnits() > 1) {
-                        this.game.attack_territory = territory;
-                    }
-                } else {
-
-                    if (this.game.attack_territory!=null && this.game.attack_territory.isNeighbor(territory.getName())){
-                        this.game.attack_territory.attack(territory);
-                        this.game.attack_territory = null;
-                    }
-                }
             }
             this.repaint();
         }
