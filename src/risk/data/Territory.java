@@ -3,6 +3,7 @@ package risk.data;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Territory {
     private String name;
@@ -140,23 +141,25 @@ public class Territory {
         int minimum = 1;
         int maximum = 3;
         ArrayList<Unit> unitBlock = new ArrayList<>();
-        for (Unit u : this.units) {
+        for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext();) {
+            Unit u = iterator.next();
             // units to undo
             if (!u.isAttacked() && u.getMovementFrom() == this) {
                 unitBlock.add(u);
-                this.units.remove(u);
+                iterator.remove();
                 // if the have 3 units to undo, then we send these units as a block
                 if (unitBlock.size() == maximum || this.units.size() == minimum) {
                     return unitBlock;
                 }
             }
         }
-        for (Unit u : this.units) {
+        for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext();) {
+            Unit u = iterator.next();
             // units to undo
             if (!u.isAttacked()) {
                 unitBlock.add(u);
-                this.units.remove(u);
-                // if the have 3 units in our block or we reached our minimum number, then we send these units as a block
+                iterator.remove();
+                // if the have 3 units to undo, then we send these units as a block
                 if (unitBlock.size() == maximum || this.units.size() == minimum) {
                     return unitBlock;
                 }
