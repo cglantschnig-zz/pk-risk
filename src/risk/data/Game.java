@@ -107,7 +107,30 @@ public class Game implements StateChangeListener{
             this.map.repaint();
 
             this.state.next();
-            // simulate his fights
+            // simulate his fights and movements
+
+            ArrayList<Territory> moveableTerritories = new ArrayList<>();
+            for (Territory territory : computerTerritories) {
+                if (territory.getUnits().size() > 1) {
+                    moveableTerritories.add(territory);
+                }
+            }
+
+            System.out.println(this.currentSelector.getName());
+            for (Territory source : moveableTerritories) {
+                // a 60% chance to make a move from a territory with more than 1 unit
+                if ((int)(Math.random() * 10) > 4) {
+                    int randomIndex = (int)(Math.random() * source.getNeighbors().size());
+                    Territory destination = source.getNeighbors().get(randomIndex);
+                    source.moveTo(destination, this);
+                }
+            }
+
+            // reset all unit values
+            for (Territory tmp : this.territories.values()) {
+                tmp.resetUnits();
+            }
+
 
             this.next();
         } else {
