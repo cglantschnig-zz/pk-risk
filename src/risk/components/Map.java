@@ -20,6 +20,8 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
     private ArrayList<PatchPolygon> areas;
     private Game game = null;
 
+    private Territory selectedTerritory = null;
+
     private ArrayList<TerritoryComponent> currentTerritories = new ArrayList<>();
     private ArrayList<NeighborLineComponent> currentNeighbors = new ArrayList<>();
 
@@ -125,12 +127,20 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
                     break;
                 }
             }
-            for (Territory territory : this.territories) {
-                territory.setSelected(false);
-                if (territory.getName().equals(clicked)) {
-                    territory.setSelected(true);
+            if (SwingUtilities.isRightMouseButton(e)) {
+                if (this.selectedTerritory != null) {
+                    this.selectedTerritory.moveTo(this.game.findTerritory(clicked), this.game);
                 }
-                this.game.updateTerritory(territory);
+            } else {
+                this.selectedTerritory = null;
+                for (Territory territory : this.territories) {
+                    territory.setSelected(false);
+                    if (territory.getName().equals(clicked) && territory.getPlayer() == this.game.getCurrentPlayer()) {
+                        this.selectedTerritory = territory;
+                        territory.setSelected(true);
+                    }
+                    this.game.updateTerritory(territory);
+                }
             }
             this.repaint();
         }

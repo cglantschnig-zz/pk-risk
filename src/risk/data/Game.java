@@ -116,7 +116,6 @@ public class Game implements StateChangeListener{
                 }
             }
 
-            System.out.println(this.currentSelector.getName());
             for (Territory source : moveableTerritories) {
                 // a 60% chance to make a move from a territory with more than 1 unit
                 if ((int)(Math.random() * 10) > 4) {
@@ -130,7 +129,6 @@ public class Game implements StateChangeListener{
             for (Territory tmp : this.territories.values()) {
                 tmp.resetUnits();
             }
-
 
             this.next();
         } else {
