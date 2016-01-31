@@ -9,7 +9,7 @@ public class Unit implements Comparable<Unit> {
 
     private int currentRoll = 0;
     private boolean attacked = false;
-    private Territory movementFrom = null;
+    private Territory originTerritory = null;
 
     public Unit() {
 
@@ -21,6 +21,7 @@ public class Unit implements Comparable<Unit> {
     }
 
     public static void attack(ArrayList<Unit> attacker, ArrayList<Unit> defender) {
+
         // roll the dice for all the units
         for (Unit u : attacker) {
             u.roll();
@@ -61,16 +62,12 @@ public class Unit implements Comparable<Unit> {
         return attacked;
     }
 
-    public Territory getMovementFrom() {
-        return this.movementFrom;
+    public Territory getOriginTerritory() {
+        return this.originTerritory;
     }
 
-    public void setMovementTerritory(Territory territory) {
-        this.movementFrom = territory;
-    }
-
-    public void reset() {
-        this.movementFrom = null;
+    public void reset(Territory territory) {
+        this.originTerritory = territory;
         this.currentRoll = 0;
         this.attacked = false;
     }
@@ -78,5 +75,10 @@ public class Unit implements Comparable<Unit> {
     @Override
     public int compareTo(Unit o) {
         return this.currentRoll - o.currentRoll;
+    }
+
+    @Override
+    public String toString() {
+        return "origin: " +  this.originTerritory;
     }
 }

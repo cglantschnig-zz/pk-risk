@@ -125,11 +125,6 @@ public class Game implements StateChangeListener{
                 }
             }
 
-            // reset all unit values
-            for (Territory tmp : this.territories.values()) {
-                tmp.resetUnits();
-            }
-
             this.next();
         } else {
             int availableReinforcement = this.currentSelector.getReinforcementCount(this);
@@ -148,6 +143,17 @@ public class Game implements StateChangeListener{
         for (ReinforcementChangedListener listener : this.reinforceListeners) {
             listener.reinforcementChanged(count);
         }
+    }
+
+    public void checkForGameFinished() {
+        for (Territory tmp : this.territories.values()) {
+            if (tmp.getPlayer() != this.currentSelector) {
+                return;
+            }
+        }
+        // all countries in the map belong to the current player
+        System.out.println(this.currentSelector + " won the game :)");
+        this.state.finish();
     }
 
     public void addPlayerChangedListener(PlayerChangedListener listener) {
@@ -271,6 +277,11 @@ public class Game implements StateChangeListener{
             this.currentSelector = null;
             this.turn = 0;
             this.next();
+        } else if (newState instanceof FightState) {
+            // reset all unit values
+            for (Territory tmp : this.territories.values()) {
+                tmp.resetUnits();
+            }
         }
     }
 

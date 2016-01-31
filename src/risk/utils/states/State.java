@@ -29,6 +29,14 @@ public class State {
         }
     }
 
+    public void finish() {
+        this.state = new FinishGameState();
+
+        for (StateChangeListener listener : this.listeners) {
+            listener.stateChanged(this.state);
+        }
+    }
+
     @Override
     public String toString() {
         return this.state.toString();

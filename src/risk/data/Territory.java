@@ -78,7 +78,19 @@ public class Territory {
      * moves units from the current territory to the destination. If the destination belongs to another player they are going to fight.
      * the method returns true if an occupation was successful
      */
-    public void moveTo(Territory destination, Game game) {
+    public boolean moveTo(Territory destination, Game game) {
+
+        boolean found = false;
+        for (Territory tmp : this.neighbors.values()) {
+            if (tmp.name.equals(destination.name)) {
+                found = true;
+                break;
+            }
+        }
+        // destination territory is no neightbor
+        if (!found) {
+            return false;
+        }
 
         // check if the destination has the same owner as the source
         if (destination.getPlayer() == this.getPlayer()) {
@@ -86,13 +98,6 @@ public class Territory {
             ArrayList<Unit> unitList = this.getUnitBlock(destination);
 
             for (Unit u : unitList) {
-                // we send our units back
-                if (u.getMovementFrom() == this) {
-                    u.setMovementTerritory(null);
-                } else {
-                    // we set our origin territory
-                    u.setMovementTerritory(this);
-                }
                 destination.addUnit(u);
             }
 
@@ -101,25 +106,47 @@ public class Territory {
             ArrayList<Unit> sourceUnits = this.getUnitBlock();
             ArrayList<Unit> destinationUnits = destination.getUnitBlock(true);
 
+            // if all sourceUnits are already used (not able to attack)
+            if (sourceUnits.size() == 0) {
+                for (Unit u : destinationUnits) {
+                    destination.units.add(u);
+                    return false;
+                }
+            }
+            if (destinationUnits.size() == 0) {
+                // error case give defender 1 unit and return attackers units
+                for (Unit u : sourceUnits) {
+                    this.units.add(u);
+                }
+                destination.units.add(new Unit());
+                return false;
+            }
+
+            // dead units will be eliminated
             Unit.attack(sourceUnits, destinationUnits);
 
+            // put the remaining destination units to the destination
             for (Unit u : destinationUnits) {
                 destination.units.add(u);
             }
 
+            // if there are still 0 units in the destination, then they are lost and the attacker takes it
             if (destination.units.size() == 0) {
                 for (Unit u : sourceUnits) {
                     destination.units.add(u);
                 }
                 destination.player = this.player;
-                //game.checkForGameFinished();
+                game.checkForGameFinished();
+                return true;
             } else {
+                // if the occupation was not successful the left units go back
                 for (Unit u : sourceUnits) {
                     this.units.add(u);
                 }
             }
 
         }
+        return false;
 
     }
 
@@ -130,9 +157,16 @@ public class Territory {
         int minimum = isDefender ? 0 : 1;
         int maximum = isDefender ? 2 : 3;
         ArrayList<Unit> unitBlock = new ArrayList<>();
-        for (int i = 0; i < maximum && this.units.size() > minimum; i++) {
-            Unit u = this.units.remove(0);
-            unitBlock.add(u);
+        for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext();) {
+            Unit u = iterator.next();
+            if (isDefender || (!u.isAttacked() && u.getOriginTerritory().name.equals(this.name))) {
+                unitBlock.add(u);
+                iterator.remove();
+                // if the have 3 units to undo, then we send these units as a block
+                if (unitBlock.size() == maximum || this.units.size() == minimum) {
+                    return unitBlock;
+                }
+            }
         }
         return unitBlock;
     }
@@ -144,7 +178,7 @@ public class Territory {
         for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext();) {
             Unit u = iterator.next();
             // units to undo
-            if (!u.isAttacked() && u.getMovementFrom() == this) {
+            if (!u.isAttacked() && u.getOriginTerritory() != null && u.getOriginTerritory().name.equals(territory.name)) {
                 unitBlock.add(u);
                 iterator.remove();
                 // if the have 3 units to undo, then we send these units as a block
@@ -156,7 +190,7 @@ public class Territory {
         for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext();) {
             Unit u = iterator.next();
             // units to undo
-            if (!u.isAttacked()) {
+            if (!u.isAttacked() && u.getOriginTerritory().name.equals(this.name)) {
                 unitBlock.add(u);
                 iterator.remove();
                 // if the have 3 units to undo, then we send these units as a block
@@ -170,7 +204,7 @@ public class Territory {
 
     public void resetUnits() {
         for (Unit u : this.units) {
-            u.reset();
+            u.reset(this);
         }
     }
 
