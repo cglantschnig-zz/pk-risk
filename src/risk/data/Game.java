@@ -74,7 +74,7 @@ public class Game implements StateChangeListener{
         // set Players
         this.players = new Player[5];
         this.players[0] = new Computer("Computer 1", new Color(255, 99, 72));
-        this.players[1] = new Person("Computer 2", new Color(44, 255, 144));
+        this.players[1] = new Person("Player 1", new Color(44, 255, 144));
         this.players[2] = new Computer("Computer 3", new Color(179, 77, 255));
         this.players[3] = new Computer("Computer 4", new Color(255, 210, 90));
         this.players[4] = new Computer("Computer 5", new Color(90, 119, 121));

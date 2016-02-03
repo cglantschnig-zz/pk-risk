@@ -174,8 +174,9 @@ public class Territory {
     private ArrayList<Unit> getUnitBlock(Territory territory) {
         int minimum = 1;
         int maximum = 3;
+
         ArrayList<Unit> unitBlock = new ArrayList<>();
-        for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext();) {
+        for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext() && this.units.size() > 1;) {
             Unit u = iterator.next();
             // units to undo
             if (!u.isAttacked() && u.getOriginTerritory() != null && u.getOriginTerritory().name.equals(territory.name)) {
@@ -187,7 +188,7 @@ public class Territory {
                 }
             }
         }
-        for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext();) {
+        for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext() && this.units.size() > 1;) {
             Unit u = iterator.next();
             // units to undo
             if (!u.isAttacked() && u.getOriginTerritory().name.equals(this.name)) {
