@@ -39,6 +39,7 @@ public class Game implements StateChangeListener{
         this(mapFile);
         this.map = initiator.map;
         this.state = new State(new NewState());
+        this.addStateChangeListener(this);
     }
 
     /**
@@ -96,6 +97,14 @@ public class Game implements StateChangeListener{
         this.state.next();
         this.currentSelector = this.players[this.turn % this.players.length];
         this.turn += 1;
+
+        System.out.println(currentSelector + " -> " + currentSelector.isDead());
+        if (currentSelector.isDead()) {
+            this.state.next(); // simulate his reinforcement
+            this.next(); // simulate his fights
+            return;
+        }
+
         if (currentSelector instanceof Computer) {
 
             // set his reinforcements
@@ -297,6 +306,8 @@ public class Game implements StateChangeListener{
             for (Territory tmp : this.territories.values()) {
                 tmp.resetUnits();
             }
+        } else if (newState instanceof ReinforcementState) {
+            this.map.resetSelection();
         }
     }
 

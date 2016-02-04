@@ -75,6 +75,7 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
     @Override
     public void mouseClicked(MouseEvent e) {
         if (this.game.getState() instanceof SelectionState) {
+            // get clicked territory
             String clicked = null;
             for (PatchPolygon area : this.areas) {
                 if (area.contains(e.getX(), e.getY())) {
@@ -82,6 +83,7 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
                     break;
                 }
             }
+            // check if the clicked territory belongs to the left ones
             ArrayList<Territory> leftOnes = this.game.getLeftTerritories();
             boolean changed = false;
             for (Territory tmp : leftOnes) {
@@ -100,6 +102,12 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
 
         }
         else if (this.game.getState() instanceof ReinforcementState) {
+            // if the player has no reinforcement do nothing
+            if (this.game.getCurrentPlayer().getReinforcementCount(this.game) == 0) {
+                this.game.nextState();
+                return;
+            }
+            // find the clicked territory
             String clicked = null;
             for (PatchPolygon area : this.areas) {
                 if (area.contains(e.getX(), e.getY())) {
@@ -120,6 +128,7 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
             }
         }
         else if (this.game.getState() instanceof FightState) {
+            // find territory
             String clicked = null;
             for (PatchPolygon area : this.areas) {
                 if (area.contains(e.getX(), e.getY())) {
@@ -144,6 +153,14 @@ public class Map extends JComponent implements MouseListener, MapChangeListener 
             }
             this.repaint();
         }
+    }
+
+    public void resetSelection() {
+        for (Territory territory : this.territories) {
+            territory.setSelected(false);
+            this.game.updateTerritory(territory);
+        }
+        this.repaint();
     }
 
     @Override

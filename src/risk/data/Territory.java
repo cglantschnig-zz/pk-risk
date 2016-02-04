@@ -135,7 +135,9 @@ public class Territory {
                 for (Unit u : sourceUnits) {
                     destination.units.add(u);
                 }
+                Player destinationPlayer = destination.player;
                 destination.player = this.player;
+                destinationPlayer.checkIfDead(game);
                 game.checkForGameFinished();
                 return true;
             } else {
@@ -160,9 +162,9 @@ public class Territory {
         int minimum = isDefender ? 0 : 1;
         int maximum = isDefender ? 2 : 3;
         ArrayList<Unit> unitBlock = new ArrayList<>();
-        for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext() && this.units.size() > 1;) {
+        for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext() && this.units.size() > minimum;) {
             Unit u = iterator.next();
-            if (isDefender || (!u.isAttacked() && u.getOriginTerritory().name.equals(this.name))) {
+            if (isDefender || (!u.isAttacked() && u.getOriginTerritory() != null && u.getOriginTerritory().name.equals(this.name))) {
                 unitBlock.add(u);
                 iterator.remove();
                 // if the have 3 units to undo, then we send these units as a block

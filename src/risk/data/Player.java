@@ -8,6 +8,7 @@ public abstract class Player {
     public String name;
     public Color color;
 
+    private boolean dead = false;
     private int leftReinforcement = 0;
 
     public Player(String name, Color color) {
@@ -25,6 +26,25 @@ public abstract class Player {
         return this.color;
     }
 
+    public boolean isDead() {
+        return dead;
+    }
+    public void checkIfDead(Game game) {
+        int territoryCount = 0;
+        for (Territory territory : game.getTerritories()) {
+            if (territory.getPlayer() == this) {
+                territoryCount += 1;
+            }
+        }
+        // if the player has no territories. set him as dead
+        if (territoryCount == 0) {
+            this.dead = true;
+        }
+    }
+
+    /**
+     * calculates the reinforcement for the current player on the game map
+     */
     public int getReinforcementCount(Game game) {
         int territoryCount = 0;
         for (Territory territory : game.getTerritories()) {
@@ -46,7 +66,10 @@ public abstract class Player {
             }
         }
 
-        return Math.floorDiv(territoryCount, 3) + bonus;
+        int calculatedReinforcement = Math.floorDiv(territoryCount, 3) + bonus;
+
+        // set at least 2 Reinforcement for each player
+        return Math.max(calculatedReinforcement, 2);
     }
 
     public void takeReinforcement(Game game) {
