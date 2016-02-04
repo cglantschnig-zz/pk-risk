@@ -150,6 +150,9 @@ public class Territory {
 
     }
 
+    /**
+     * gets a unit block when attacking
+     */
     private ArrayList<Unit> getUnitBlock() {
         return this.getUnitBlock(false);
     }
@@ -157,7 +160,7 @@ public class Territory {
         int minimum = isDefender ? 0 : 1;
         int maximum = isDefender ? 2 : 3;
         ArrayList<Unit> unitBlock = new ArrayList<>();
-        for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext();) {
+        for (Iterator<Unit> iterator = this.units.iterator(); iterator.hasNext() && this.units.size() > 1;) {
             Unit u = iterator.next();
             if (isDefender || (!u.isAttacked() && u.getOriginTerritory().name.equals(this.name))) {
                 unitBlock.add(u);
@@ -171,6 +174,9 @@ public class Territory {
         return unitBlock;
     }
 
+    /**
+     * gets the a block of units for moving units
+     */
     private ArrayList<Unit> getUnitBlock(Territory territory) {
         int minimum = 1;
         int maximum = 3;
@@ -203,6 +209,9 @@ public class Territory {
         return unitBlock;
     }
 
+    /**
+     * resets all units in the given territory
+     */
     public void resetUnits() {
         for (Unit u : this.units) {
             u.reset(this);

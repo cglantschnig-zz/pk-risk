@@ -15,11 +15,17 @@ public class Unit implements Comparable<Unit> {
 
     }
 
+    /**
+     * roll some dices
+     */
     private void roll() {
         currentRoll = (int) Math.floor(Math.random() * (this.STRENGTH + 1));
         attacked = true;
     }
 
+    /**
+     * attacking units are fighting with the defending units and the deads units will be removed on one site
+     */
     public static void attack(ArrayList<Unit> attacker, ArrayList<Unit> defender) {
 
         // roll the dice for all the units

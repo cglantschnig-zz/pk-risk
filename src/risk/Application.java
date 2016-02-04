@@ -19,6 +19,9 @@ public class Application extends JFrame implements MapChangeListener {
 
     private Game game;
 
+    /**
+     * Frame of the Game. It just holds the game and the UI Components on the highest level
+     */
     public Application() {
         super("Risiko");
 

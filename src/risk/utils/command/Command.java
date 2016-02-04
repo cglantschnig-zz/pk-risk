@@ -1,7 +1,5 @@
 package risk.utils.command;
 
-import com.sun.xml.internal.ws.util.StringUtils;
-
 import java.util.Arrays;
 
 public class Command {
@@ -10,6 +8,9 @@ public class Command {
     protected String commandName;
     protected String[] parameters;
 
+    /**
+     * parses the command
+     */
     public Command(String cmd) {
         this.original = cmd;
         String[] words = cmd.split("\\s+");

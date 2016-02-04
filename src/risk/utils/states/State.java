@@ -4,6 +4,19 @@ import risk.utils.listeners.StateChangeListener;
 
 import java.util.ArrayList;
 
+/**
+ * State Wrapper
+ *
+ *
+ *
+ * NewState -> SelectionState -> GameState -> ReinforcementState -
+ *                                         ^                     |
+ *                                         |                     |
+ *                                         |                     v
+ *                                         ----- FightState ----- ---> FinishGameState
+ *
+ *
+ */
 public class State {
     private IState state = null;
     private ArrayList<StateChangeListener> listeners = new ArrayList<>();

@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+
+/**
+ * Game Controller Class
+ * this class is handling/representing one game. It contains methods to interact with graphic components.
+ */
 public class Game implements StateChangeListener{
 
     private HashMap<String, Territory> territories;
@@ -38,6 +43,7 @@ public class Game implements StateChangeListener{
 
     /**
      * 1. load map file and create Map data
+     * 2. initialize the players
      */
     public Game(String mapFile) {
         territories = new HashMap<>();
@@ -82,9 +88,11 @@ public class Game implements StateChangeListener{
     }
 
     /**
-     * performs the current move
+     * switches to the next player and if it is a pc his moves will get simulated,
+     * otherwise the reinforcement will get initialized
      */
     public void next() {
+        // set the next player
         this.state.next();
         this.currentSelector = this.players[this.turn % this.players.length];
         this.turn += 1;
@@ -127,6 +135,7 @@ public class Game implements StateChangeListener{
 
             this.next();
         } else {
+            // get reinforcement and update UI
             int availableReinforcement = this.currentSelector.getReinforcementCount(this);
             this.currentSelector.setLeftReinforcement(availableReinforcement);
             this.changeReinforcement(availableReinforcement);
@@ -145,6 +154,9 @@ public class Game implements StateChangeListener{
         }
     }
 
+    /**
+     * checks if the game is finished
+     */
     public void checkForGameFinished() {
         for (Territory tmp : this.territories.values()) {
             if (tmp.getPlayer() != this.currentSelector) {
@@ -171,6 +183,9 @@ public class Game implements StateChangeListener{
         this.state.next();
     }
 
+    /**
+     * country selection
+     */
     public void setNextPerson() {
         if (this.leftTerritories.isEmpty()) {
             this.state.next();
