@@ -102,6 +102,7 @@ public class Territory {
             }
 
         } else {
+            
             // attack the other person
             ArrayList<Unit> sourceUnits = this.getUnitBlock();
             ArrayList<Unit> destinationUnits = destination.getUnitBlock(true);
@@ -110,8 +111,8 @@ public class Territory {
             if (sourceUnits.size() == 0) {
                 for (Unit u : destinationUnits) {
                     destination.units.add(u);
-                    return false;
                 }
+                return false;
             }
             if (destinationUnits.size() == 0) {
                 // error case give defender 1 unit and return attackers units
