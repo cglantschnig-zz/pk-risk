@@ -98,7 +98,6 @@ public class Game implements StateChangeListener{
         this.currentSelector = this.players[this.turn % this.players.length];
         this.turn += 1;
 
-        System.out.println(currentSelector + " -> " + currentSelector.isDead());
         if (currentSelector.isDead()) {
             this.state.next(); // simulate his reinforcement
             this.next(); // simulate his fights
