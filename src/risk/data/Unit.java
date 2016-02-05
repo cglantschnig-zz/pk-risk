@@ -53,7 +53,7 @@ public class Unit implements Comparable<Unit> {
         Unit maxAttacker = Collections.max(attacker);
         Unit maxDefender = Collections.max(defender);
 
-        if (maxAttacker.compareTo(maxDefender) > 0) {
+        if (maxAttacker.compareTo(maxDefender) <= 0) {
             attacker.remove(maxAttacker);
             maxDefender.currentRoll = -1;
             return true;

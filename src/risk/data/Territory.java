@@ -102,7 +102,7 @@ public class Territory {
             }
 
         } else {
-            
+
             // attack the other person
             ArrayList<Unit> sourceUnits = this.getUnitBlock();
             ArrayList<Unit> destinationUnits = destination.getUnitBlock(true);
